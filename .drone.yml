@@ -1,0 +1,13 @@
+# Build configuration for Tea CI, https://www.tea-ci.org
+
+matrix:
+  BITS:
+    - 32
+    - 64
+
+build:
+  image: teaci/msys$$BITS
+  shell: mingw$$BITS
+  commands:
+    - make commit-id
+    - make check
