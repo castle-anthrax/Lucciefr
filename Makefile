@@ -11,8 +11,19 @@ include Makefile.inc
 OBJ = obj/
 LIB = lib/
 
+# libs
+
+# LuaJIT
+# (to be done)
+
+# MessagePack
+MSGPACK := $(LIB)msgpack.a
+INCL += -Imsgpack-c/include
+$(MSGPACK):
+	make -C msgpack-c/ -f Makefile.lcfr CC=$(CC) AR=$(AR) LIB=../$(MSGPACK)
+
 # build sandbox application and run tests
-check: prepare
+check: prepare $(MSGPACK)
 	make -C tests/
 
 # prepare build (create directories)
@@ -35,3 +46,4 @@ clean:
 mrproper: clean
 	rm -rf $(OBJ)
 	rm -rf $(LIB)
+	make -C msgpack-c/ -f Makefile.lcfr clean
