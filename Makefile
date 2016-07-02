@@ -11,7 +11,16 @@ include Makefile.inc
 OBJ = obj/
 LIB = lib/
 
+#file sets
+CORE_C = $(wildcard core/*.c)
+CORE_O = $(addprefix $(OBJ), $(notdir $(CORE_C:.c=.o)))
+
 # libs
+
+# core
+CORE = $(LIB)core.a
+$(CORE): prepare $(CORE_O)
+	@$(AR) r $@ $(CORE_O)
 
 # LuaJIT
 # (to be done)
@@ -19,11 +28,16 @@ LIB = lib/
 # MessagePack
 MSGPACK := $(LIB)msgpack.a
 INCL += -Imsgpack-c/include
-$(MSGPACK):
+$(MSGPACK): prepare
 	make -C msgpack-c/ -f Makefile.lcfr CC=$(CC) AR=$(AR) LIB=../$(MSGPACK)
 
+# build rules to create $(OBJ) files from source
+$(OBJ)%.o: core/%.c
+	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
+
+
 # build sandbox application and run tests
-check: prepare $(MSGPACK)
+check: $(CORE) $(MSGPACK)
 	make -C tests/
 
 # prepare build (create directories)
