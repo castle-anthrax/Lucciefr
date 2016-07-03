@@ -1,8 +1,8 @@
 #
 #	tests/Makefile
 #
-CFLAGS := -Wall -Werror -I../include -I../core
-LIBS := ../lib/core.a
+CFLAGS := -Wall -Werror -I../include -I../core -I../msgpack-c/include
+LIBS := ../lib/core.a ../lib/msgpack.a
 
 include ../Makefile.inc
 

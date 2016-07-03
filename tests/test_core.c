@@ -1,3 +1,6 @@
+#include "log.h"
+#include "logstdio.h"
+#include "mpkutils.h"
 #include "timing.h"
 
 void test_core_time(void) {
@@ -17,4 +20,64 @@ void test_core_time(void) {
 	// current time ("now")
 	format_timestamp(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S.qqq", get_timestamp(), true);
 	printf("%s\n", buffer);
+}
+
+static void logtest_setup_buffer(msgpack_sbuffer *sbuf) {
+	msgpack_packer pk;
+	msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
+
+	// setup an array test object
+	msgpack_pack_array(&pk, 3);
+	msgpack_pack_int(&pk, 1);
+	msgpack_pack_true(&pk);
+	msgpack_pack_str(&pk, 7);
+	msgpack_pack_str_body(&pk, "example", 7);
+}
+
+void test_core_log(void) {
+	log_stdio("stdout");
+
+	check("foobar");
+	separator();
+
+	msgpack_object attach;
+	msgpack_object_from_literal(&attach, "Hello world.");
+	attach_log_info(&attach, "foobar", "simple attachment");
+	{
+		msgpack_sbuffer sbuf;
+		msgpack_sbuffer_init(&sbuf);
+		logtest_setup_buffer(&sbuf); // write test object to sbuf
+
+		msgpack_unpacked unpacked;
+		msgpack_unpacked_init(&unpacked);
+		size_t off = 0;
+		msgpack_unpack_next(&unpacked, sbuf.data, sbuf.size, &off);
+
+		// test log message with attached deserialized object
+		attach_info(&unpacked.data, "array attachment");
+
+		msgpack_unpacked_destroy(&unpacked);
+		msgpack_sbuffer_destroy(&sbuf);
+	}
+
+	enter("enter");
+	extra("Flippy Bit And The Attack Of The Hexadecimals From Base 16");
+	debug("%s = %d", "answer", 42);
+	verbose("verbose");
+	// (we insert some sleeps to test that timestamping advances properly)
+	Sleep(15);
+	info("and now for something %s different", "completely");
+	Sleep(15);
+	warn("warning");
+	Sleep(15);
+	error("error");
+	Sleep(15);
+	fatal("fatal");
+	Sleep(40);
+	scratch("foo", "bar");
+	scratch("clue", "bat");
+	check("foobar");
+	leave("leave");
+
+	log_shutdown();
 }

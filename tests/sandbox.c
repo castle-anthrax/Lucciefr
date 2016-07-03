@@ -12,6 +12,7 @@ int main() {
 	putchar('\n');
 
 	test_core_time();
+	test_core_log();
 
 	return 0;
 }
