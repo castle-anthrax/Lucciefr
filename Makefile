@@ -5,7 +5,7 @@
 include Makefile.inc
 
 # misc
-.PHONY: commit-id prepare clean mrproper
+.PHONY: commit-id prepare clean mrproper docs doxygen
 
 # output directories (out-of-tree build)
 OBJ = obj/
@@ -35,6 +35,16 @@ $(MSGPACK): prepare
 $(OBJ)%.o: core/%.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
 
+
+# generate documentation
+docs: doxygen
+
+# Note that doxygen is expected (and docs/Doxyfile configured accordingly)
+# to be run from the 'main' dir.
+# Currently only HTML output is generated, and goes to ./html/
+doxygen: docs/Doxyfile
+	@echo '(Expect some warnings, which can be safely ignored.)'
+	doxygen $<
 
 # build sandbox application and run tests
 check: $(CORE) $(MSGPACK)

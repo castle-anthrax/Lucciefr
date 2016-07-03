@@ -1,0 +1,12 @@
+/** @mainpage
+
+# Lucciefr - Lua code caving, injection and exploration framework
+
+This is the "developer" reference documentation, auto-generated from
+source (see [Github repo](https://github.com/castle-anthrax/Lucciefr))
+using doxygen. It has details on many of Lucciefr's internals.
+
+If you're interested in a 'broader' picture, you might want to check out
+the documentation overview or the (luadoc) "user" documentation.
+[**To be done.**]
+*/
