@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.10"/>
-<title>Lucciefr: Main Page</title>
+<title>Lucciefr: checkpoint_entry_t Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -39,8 +39,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -60,7 +60,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-</div><!-- top -->
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -75,15 +81,39 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+</div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">Lucciefr Documentation</div>  </div>
+<div class="title">checkpoint_entry_t Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1>Lucciefr - Lua code caving, injection and exploration framework</h1>
-<p>This is the "developer" reference documentation, auto-generated from source (see <a href="https://github.com/castle-anthrax/Lucciefr">Github repo</a>) using doxygen. It has details on many of Lucciefr's internals.</p>
-<p>If you're interested in a 'broader' picture, you might want to check out the documentation overview or the (luadoc) "user" documentation. [<b>To be done.</b>] </p>
-</div></div><!-- contents -->
+
+<p>an entry for the "checkpoint" hash map, keeping track of pass counts  
+ <a href="structcheckpoint__entry__t.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:abb651ab4ead9590fef6ecae6a82a73ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abb651ab4ead9590fef6ecae6a82a73ca"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcheckpoint__entry__t.html#abb651ab4ead9590fef6ecae6a82a73ca">id</a></td></tr>
+<tr class="memdesc:abb651ab4ead9590fef6ecae6a82a73ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">checkpoint ID (string key) <br /></td></tr>
+<tr class="separator:abb651ab4ead9590fef6ecae6a82a73ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cf17c23b4a2c4f8c57bc8d301586dea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2cf17c23b4a2c4f8c57bc8d301586dea"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcheckpoint__entry__t.html#a2cf17c23b4a2c4f8c57bc8d301586dea">count</a></td></tr>
+<tr class="memdesc:a2cf17c23b4a2c4f8c57bc8d301586dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">pass count <br /></td></tr>
+<tr class="separator:a2cf17c23b4a2c4f8c57bc8d301586dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af68725dcd419993931a32c0915879302"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af68725dcd419993931a32c0915879302"></a>
+UT_hash_handle&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcheckpoint__entry__t.html#af68725dcd419993931a32c0915879302">hh</a></td></tr>
+<tr class="memdesc:af68725dcd419993931a32c0915879302"><td class="mdescLeft">&#160;</td><td class="mdescRight">uthash handle <br /></td></tr>
+<tr class="separator:af68725dcd419993931a32c0915879302"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>an entry for the "checkpoint" hash map, keeping track of pass counts </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>core/<a class="el" href="log_8c.html">log.c</a></li>
+</ul>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Mon Jul 4 2016 12:36:31 for Lucciefr by &#160;<a href="http://www.doxygen.org/index.html">
