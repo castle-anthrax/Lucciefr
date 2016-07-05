@@ -20,6 +20,7 @@ CORE_O = $(addprefix $(OBJ), $(notdir $(CORE_C:.c=.o)))
 
 # core
 CORE = $(LIB)core.a
+INCL += -Icore
 $(CORE): prepare $(CORE_O)
 	@$(AR) r $@ $(CORE_O)
 
@@ -37,10 +38,11 @@ $(OBJ)%.o: core/%.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
 
 # shared library target ("main" dll), e.g. lucciefr-win32.dll
+MAIN_LIBS := $(CORE) $(MSGPACK)
 MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
 $(MAIN): $(wildcard main/$(TARGET)*.c)
-	$(CC) $(CFLAGS) -s -shared -o $@ $^
-main: prepare $(MAIN)
+	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^ $(MAIN_LIBS)
+main: prepare $(MAIN_LIBS) $(MAIN)
 
 
 # generate documentation

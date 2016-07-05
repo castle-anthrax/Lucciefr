@@ -12,7 +12,7 @@ check: $(SANDBOX)
 	./$(SANDBOX)
 
 $(SANDBOX): sandbox.c $(wildcard test_*.c) $(LIBS)
-	$(CC) $(CFLAGS) -o $@ $< $(LIBS) -lm
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LIBS) -lm $(DYNAMIC)
 
 clean:
 	rm -f $(SANDBOX)

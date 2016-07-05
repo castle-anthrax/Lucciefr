@@ -11,6 +11,8 @@ AR := $(TOOLCHAIN)ar
 PREFIX_LONG  = lucciefr
 PREFIX_SHORT = lcfr
 
+LDFLAGS += -static-libgcc
+
 # platform specific rules:
 ARCH := $(shell uname -s)
 ifeq ($(ARCH),Linux)
@@ -34,6 +36,11 @@ else
 	endif
 endif
 
+ifndef WINDOWS
+	# dynamic loading support
+	DYNAMIC := -ldl
+endif
+
 # default values for (unset) build vars
 BITS ?= 32
 DEBUG ?= 0
@@ -41,10 +48,18 @@ LINUX ?= 0
 DARWIN ?= 0
 WINDOWS ?= 0
 
-BUILDVARS := -DBITS=$(BITS)
+BUILDVARS := -D_GNU_SOURCE
+BUILDVARS += -DBITS=$(BITS)
 BUILDVARS += -DDEBUG=$(DEBUG)
 BUILDVARS += -D_LINUX=$(LINUX)
 BUILDVARS += -D_DARWIN=$(DARWIN)
 BUILDVARS += -D_WINDOWS=$(WINDOWS)
+
+ifeq ($(DEBUG),1)
+	CFLAGS += -g
+else
+	# strip executables
+	LDFLAGS += -s
+endif
 
 CFLAGS += -m$(BITS) $(BUILDVARS)
