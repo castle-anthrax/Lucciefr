@@ -1,10 +1,11 @@
 #
 # Lucciefr Makefile to build msgpack.a library form msgpack-c source
 #
-# Note: $CC, $AR and $LIB are expected to be passed by the parent Makefile
+# Note: $LIB is expected to be passed by the parent Makefile
 #
 
-INCL := -I./include
+include ../Makefile.inc
+CFLAGS += -I./include
 
 OBJ := obj/
 SRC := $(notdir $(wildcard src/*.c))
@@ -22,7 +23,7 @@ $(OBJ):
 
 # compile .o from .c in src dir
 $(OBJ)%.o: src/%.c
-	$(CC) $(INCL) -o $@ -c $<
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
 	rm -rf $(OBJ)
@@ -31,7 +32,7 @@ clean:
 # test case / simple example
 
 $(OBJ)simple.exe: example/c/simple_c.c $(LIB)
-	$(CC) $(INCL) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 test: $(OBJ)simple.exe
 	$(OBJ)simple.exe

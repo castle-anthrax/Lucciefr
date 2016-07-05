@@ -1,11 +1,12 @@
 #
-#	Lucciefr Makefile
+#	Lucciefr (top-level) Makefile
 #
 
 include Makefile.inc
 
 # misc
 .PHONY: commit-id prepare clean mrproper docs doxygen
+.PHONY: main
 
 # output directories (out-of-tree build)
 OBJ = obj/
@@ -29,11 +30,17 @@ $(CORE): prepare $(CORE_O)
 MSGPACK := $(LIB)msgpack.a
 INCL += -Imsgpack-c/include
 $(MSGPACK): prepare
-	make -C msgpack-c/ -f Makefile.lcfr CC=$(CC) AR=$(AR) LIB=../$(MSGPACK)
+	make -C msgpack-c/ -f Makefile.lcfr LIB=../$(MSGPACK)
 
 # build rules to create $(OBJ) files from source
 $(OBJ)%.o: core/%.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
+
+# shared library target ("main" dll), e.g. lucciefr-win32.dll
+MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
+$(MAIN): $(wildcard main/$(TARGET)*.c)
+	$(CC) $(CFLAGS) -s -shared -o $@ $^
+main: prepare $(MAIN)
 
 
 # generate documentation
@@ -70,4 +77,5 @@ clean:
 mrproper: clean
 	rm -rf $(OBJ)
 	rm -rf $(LIB)
+	rm -rf main/*.so main/*.dll
 	make -C msgpack-c/ -f Makefile.lcfr clean

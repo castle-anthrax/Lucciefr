@@ -7,20 +7,27 @@
 CC := $(TOOLCHAIN)gcc
 AR := $(TOOLCHAIN)ar
 
+# name prefixes
+PREFIX_LONG  = lucciefr
+PREFIX_SHORT = lcfr
+
 # platform specific rules:
 ARCH := $(shell uname -s)
 ifeq ($(ARCH),Linux)
 	LINUX := 1
+	TARGET := lin
 	CFLAGS += -fPIC
 	DLL    := .so
 
 else
 	ifeq ($(ARCH),Darwin) # MacOSX
 		DARWIN := 1
+		TARGET := osx
 		DLL := .so
 
 	else  # Windows, MinGW
 		WINDOWS := 1
+		TARGET := win
 		EXE := .exe
 		DLL := .dll
 
@@ -40,4 +47,4 @@ BUILDVARS += -D_LINUX=$(LINUX)
 BUILDVARS += -D_DARWIN=$(DARWIN)
 BUILDVARS += -D_WINDOWS=$(WINDOWS)
 
-CFLAGS += $(BUILDVARS)
+CFLAGS += -m$(BITS) $(BUILDVARS)
