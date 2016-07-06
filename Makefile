@@ -26,6 +26,9 @@ CORE_O = $(addprefix $(OBJ), $(notdir $(CORE_C:.c=.o)))
 CORE_LUA := $(wildcard core/*.lua)
 CORE_LUA_O := $(addprefix $(OBJ), $(notdir $(CORE_LUA:.lua=.core.lua.o)))
 
+AGENT_C = $(wildcard agent/*.c)
+AGENT_O = $(addprefix $(OBJ), $(notdir $(AGENT_C:.c=.o)))
+
 # we use a small Lua utility that "wraps" .lua scripts into binary resources
 # (use @ to suppress command output, as objwrap.lua will echo a 'short' version of it)
 BINWRAP=@$(LUA_DIR)/luajit$(EXE) objwrap.lua "$(OCPY) $(OFLAGS)"
@@ -55,6 +58,14 @@ INCL += -Imsgpack-c/include
 $(MSGPACK): prepare
 	make -C msgpack-c/ -f Makefile.lcfr LIB=../$(MSGPACK)
 
+# agent library target
+AGENT_LIBS := $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)
+AGENT := $(LIB)$(PREFIX_LONG)-agent-$(TARGET)$(BITS).a
+INCL += -Iagent
+$(AGENT): $(AGENT_O)
+	@$(AR) r $@ $(AGENT_O)
+agent: prepare $(AGENT)
+
 # ---------------------------------------------------------------------------
 
 # build rules to create $(OBJ) files from source
@@ -63,6 +74,12 @@ $(OBJ)%.o: core/%.c
 $(OBJ)%.core.lua.o: core/%.lua $(LUA)
 	$(BINWRAP) $< $@
 
+$(OBJ)%.o: agent/%.c
+	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
+
+$(OBJ)%.o: agent/$(TARGET)/%.c
+	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
+
 # shared library target ("main" dll), e.g. lucciefr-win32.dll
 MAIN_LIBS := $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)
 MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
@@ -70,6 +87,8 @@ $(MAIN): main/dllmain.c $(MAIN_LIBS)
 	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^
 main: prepare $(MAIN_LIBS) $(MAIN)
 
+testagent: testagent.c prepare $(AGENT) $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)
+	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) $< -o $@ $(AGENT) $(AGENT_LIBS) $(LD_LIBS)
 
 # ---------------------------------------------------------------------------
 
