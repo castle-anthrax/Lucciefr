@@ -543,6 +543,20 @@ LUA_API lua_State *lua_tothread(lua_State *L, int idx)
   return (!tvisthread(o)) ? NULL : threadV(o);
 }
 
+// --- Lucciefr custom patch ---
+// fix conversion of local pointers and references (structures/arrays)
+// 20160607 - based on previous work by MWI and BNO
+#include "lj_ctype.h"
+const void *cdata_topointer(lua_State *L, cTValue *o)
+{
+  GCcdata *cd = cdataV(o);
+  CType *ct = ctype_raw(ctype_cts(L), cd->ctypeid);
+  void *result = cdataptr(cd);
+  // dereference result if it is a pointer type, otherwise return it unchanged
+  if (ctype_isptr(ct->info) || ctype_isfunc(ct->info)) return *(void* *)result;
+  return result;
+}
+
 LUA_API const void *lua_topointer(lua_State *L, int idx)
 {
   cTValue *o = index2adr(L, idx);
@@ -551,7 +565,7 @@ LUA_API const void *lua_topointer(lua_State *L, int idx)
   else if (tvislightud(o))
     return lightudV(o);
   else if (tviscdata(o))
-    return cdataptr(cdataV(o));
+    return cdata_topointer(L, o);
   else if (tvisgcv(o))
     return gcV(o);
   else

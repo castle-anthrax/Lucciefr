@@ -643,6 +643,71 @@ LJLIB_CF(ffi_offsetof)	LJLIB_REC(ffi_xof FF_ffi_offsetof)
   return 0;
 }
 
+/*
+Added 2014-05-05 [BNO]:
+
+Extension "ffi.fields(cdata)" that will return a 'Lua version'
+of the cdata as a table of struct member fields
+(each containing field name and value in turn).
+
+This function is based on a "LuaJIT FFI cdata introspection" topic
+from the LuaJIT mailing list that Michal Kottman started in Feb 2011
+(see e.g. http://comments.gmane.org/gmane.comp.lang.lua.general/75695)
+
+Note: This is highly experimental, and may be unstable.
+      If it breaks, you get to keep the pieces... :P
+
+Note2: While we have relatively easy access to the FFI cdata types involved,
+       it's probably better (performance-wise) not to include them in the output
+       table. If needed, the consuming code could always use ffi.typeof() on the
+       values provided.
+*/
+#define FIELDS_KEY_NAME	"name"
+#define FIELDS_KEY_DATA	"value"
+LJLIB_CF(ffi_fields)
+{
+  CTState *cts = ctype_cts(L);
+  CTypeID id = ffi_checkctype(L, cts, NULL);
+  CType *ct = ctype_raw(cts, id);
+  GCcdata *cd = cdataV(L->base);
+  uint8_t *p = cdataptr(cd); // data pointer
+
+  // if the ctype is a pointer, de-reference it
+  if (ctype_isptr(ct->info)) {
+    p = *(void **)p;
+    ct = ctype_rawchild(cts, ct);
+  }
+
+  // must now be a struct of known size to enumerate members
+  if (ctype_isstruct(ct->info) && ct->size != CTSIZE_INVALID) {
+    int i = 0;
+    lua_newtable(L); // the result table that will be returned
+    while (ct->sib) {
+      lua_createtable(L, 0, 2); // we'll place each member field (name,value) into a subtable
+
+      ct = ctype_get(cts, ct->sib); // get the (next) sibling
+      lua_pushstring(L, FIELDS_KEY_NAME);
+      if (gcref(ct->name))
+        setstrV(L, L->top++, gcrefp(ct->name, GCstr)); // and its name
+      else
+        // the name may be empty! (often on 'anonymous' subtypes of structs and unions)
+        lua_pushinteger(L, i + 1); // in this case simply use the field index instead
+      lua_rawset(L, -3); // store name to table[FIELDS_KEY_NAME]
+
+      // we have the CType ct and it's offset (ct->size) from the cdata start (p) here,
+      // so we can retrieve the actual data ("value") from (p + ct->size)
+      lua_pushstring(L, FIELDS_KEY_DATA);
+      if (lj_cdata_get(cts, ct, L->top++, p + ct->size)) lj_gc_check(L);
+      lua_rawset(L, -3); // store value to table[FIELDS_KEY_DATA]
+
+      lua_rawseti(L, -2, ++i); // finally store the member entry (subtable) into the result
+    }
+    return 1;
+  }
+  lj_err_argtype(L, 1, "struct type");
+  return 0;
+}
+
 LJLIB_CF(ffi_errno)	LJLIB_REC(.)
 {
   int err = errno;
