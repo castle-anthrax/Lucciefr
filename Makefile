@@ -25,7 +25,12 @@ $(CORE): prepare $(CORE_O)
 	@$(AR) r $@ $(CORE_O)
 
 # LuaJIT
-# (to be done)
+LUA_DIR = luajit/src
+INCL += -I$(LUA_DIR)
+LUA = $(LUA_DIR)/libluajit.a
+$(LUA):
+	make -C $(LUA_DIR) CC="$(CC) -m$(BITS)"
+luajit: $(LUA)
 
 # MessagePack
 MSGPACK := $(LIB)msgpack.a
@@ -38,7 +43,7 @@ $(OBJ)%.o: core/%.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
 
 # shared library target ("main" dll), e.g. lucciefr-win32.dll
-MAIN_LIBS := $(CORE) $(MSGPACK)
+MAIN_LIBS := $(CORE) $(MSGPACK) $(LUA)
 MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
 $(MAIN): $(wildcard main/$(TARGET)*.c)
 	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^ $(MAIN_LIBS)
@@ -56,7 +61,7 @@ doxygen: docs/Doxyfile
 	doxygen $<
 
 # build sandbox application and run tests
-check: $(CORE) $(MSGPACK)
+check: $(CORE) $(MSGPACK) $(LUA)
 	make -C tests/
 
 # prepare build (create directories)
@@ -81,3 +86,4 @@ mrproper: clean
 	rm -rf $(LIB)
 	rm -rf main/*.so main/*.dll
 	make -C msgpack-c/ -f Makefile.lcfr clean
+	make -C $(LUA_DIR) clean

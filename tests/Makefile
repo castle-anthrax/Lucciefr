@@ -1,8 +1,9 @@
 #
 #	tests/Makefile
 #
-CFLAGS := -Wall -Werror -I../include -I../core -I../msgpack-c/include
-LIBS := ../lib/core.a ../lib/msgpack.a
+CFLAGS := -Wall -Werror
+CFLAGS += -I../include -I../core -I../msgpack-c/include -I../luajit/src
+LIBS := ../lib/core.a ../lib/msgpack.a ../luajit/src/libluajit.a
 
 include ../Makefile.inc
 
