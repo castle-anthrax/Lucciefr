@@ -3,6 +3,10 @@
 #include "mpkutils.h"
 #include "timing.h"
 
+void test_core_bits(void) {
+	assert(BITS >> 3 == sizeof(void*));
+}
+
 void test_core_time(void) {
 	printf("%.3f\n", get_timestamp());
 	Sleep(666);
