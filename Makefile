@@ -20,7 +20,7 @@ CORE_O = $(addprefix $(OBJ), $(notdir $(CORE_C:.c=.o)))
 
 # core
 CORE = $(LIB)core.a
-INCL += -Icore
+INCL += -Iinclude -Icore
 $(CORE): prepare $(CORE_O)
 	@$(AR) r $@ $(CORE_O)
 

@@ -34,6 +34,7 @@ error("foo = %s", "bar");
 #include "log.h"
 
 #include "list.h"
+#include "macro.h"
 #include "mpkutils.h"
 #include "process.h"
 #include "strutils.h"
@@ -349,9 +350,6 @@ void log_scratch(const char *origin, const char *key, const char *value) {
 	msgpack_object_from_string(&attachment, value);
 	attach_log_level(&attachment, LOG_LEVEL_SCRATCHPAD, origin, key, -1);
 }
-
-// macro to retrieve "length" (= number of elements) of an array
-#define lengthof(array)	(sizeof(array) / sizeof(array[0]))
 
 /// return string representation of a LOG_LEVEL
 const char *log_level_string(LOG_LEVEL level) {
