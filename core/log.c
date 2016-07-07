@@ -53,6 +53,7 @@ typedef struct checkpoint_entry_t {
 
 static uint32_t indent_level = 0; // current indentation (level)
 static checkpoint_entry_t *checkpoints = NULL; // hashmap tracing checkpoints
+static uint32_t serial = 0; // sequential message number
 
 // helper function that increments (and returns) a checkpoint's pass count
 static uint32_t checkpoint_pass_count(const char *checkpoint_id) {
@@ -218,10 +219,11 @@ static void sbuffer_log_level(msgpack_sbuffer *sbuffer, msgpack_object *attachme
 	msgpack_packer pk;
 	// serialize values into the buffer using msgpack_sbuffer_write callback function
 	msgpack_packer_init(&pk, sbuffer, msgpack_sbuffer_write);
-	// A log message is represented by a MessagePack array (with 7 elements)
-	msgpack_pack_array(&pk, 7);
+	// A log message is represented by a MessagePack array (with 8 elements)
+	msgpack_pack_array(&pk, 8);
 
-	msgpack_pack_int(&pk, level); // #1: log level / message type
+	// #1: log level / message type
+	msgpack_pack_int(&pk, level);
 
 	// #2: indentation level, automatically managed ("system wide", i.e. per process)
 	if (level == LOG_LEVEL_LEAVE && indent_level > 0)
@@ -230,7 +232,8 @@ static void sbuffer_log_level(msgpack_sbuffer *sbuffer, msgpack_object *attachme
 	if (level == LOG_LEVEL_ENTER)
 		indent_level++; // entered scope = increase level
 
-	msgpack_pack_double(&pk, get_timestamp()); // #3: timestamp
+	// #3: timestamp
+	msgpack_pack_double(&pk, get_timestamp());
 
 	// #4: process ID (DWORD may be too narrow / Windows-specific?)
 	if (pid)
@@ -241,21 +244,25 @@ static void sbuffer_log_level(msgpack_sbuffer *sbuffer, msgpack_object *attachme
 	// #5: indicates the source, e.g. module name (optional, may be NULL)
 	msgpack_pack_string(&pk, origin);
 
+	// #6: the actual message
 	if (len < 0) len = msg ? strlen(msg) : 0;
-	msgpack_pack_lstring(&pk, msg, len); // #6: the actual message
+	msgpack_pack_lstring(&pk, msg, len);
 
-	// #7: (optional) arbitrary MessagePack object
+	// #7: (optional) arbitrary MessagePack object "attachment"
 	msgpack_object info = {.type = MSGPACK_OBJECT_POSITIVE_INTEGER};
 	if (level == LOG_LEVEL_CHECKPOINT && msg) {
 		// check points will automatically attach their pass count
 		info.via.u64 = checkpoint_pass_count(msg);
 		attachment = &info;
 	}
-	// and "scratch" messages will attach their value (with msg being the key)
+	// also: "scratch" messages have their value attached (msg being the key)
 	if (attachment)
 		msgpack_pack_object(&pk, *attachment);
 	else
 		msgpack_pack_nil(&pk);
+
+	// #8: a "serial" (sequential numbering) that allows checking continuity
+	msgpack_pack_uint32(&pk, ++serial);
 }
 
 /** Create a simple log message with an attachment.

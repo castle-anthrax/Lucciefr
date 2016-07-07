@@ -28,6 +28,8 @@ void log_text(FILE *stream, msgpack_object *msg) {
 
 	// indentation (DEBUG only)
 	//fprintf(stream, "@%u ", (unsigned int)MEMBER(1).via.u64);
+	// serial (DEBUG only)
+	//fprintf(stream, "#%u ", (uint32_t)MEMBER(7).via.u64);
 
 	// log level
 	LOG_LEVEL level = MEMBER(0).via.u64;
