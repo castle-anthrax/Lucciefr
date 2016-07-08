@@ -33,7 +33,7 @@ typedef enum {
 } LOG_NOTIFY;
 
 /// prototype for a logging backend callback function
-typedef void backend_callback_t(msgpack_sbuffer *logmsg, void *userptr);
+typedef void backend_callback_t(msgpack_sbuffer *logmsg, LOG_LEVEL level, void *userptr);
 /// prototype for a logging backend "command"/notification function
 typedef void backend_command_t(LOG_NOTIFY reason, void *userptr);
 

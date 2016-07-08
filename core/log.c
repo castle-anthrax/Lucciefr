@@ -80,8 +80,7 @@ static void clear_checkpoints(void) {
 }
 
 /// the actual list of logging backends
-//static
-backend_list_t *log_backends = NULL;
+static backend_list_t *log_backends = NULL;
 
 /// send "command"/notification to a specific backend
 static void log_backend_notify(backend_list_t *entry, LOG_NOTIFY reason) {
@@ -152,11 +151,16 @@ void log_shutdown(void) {
 	clear_checkpoints();
 }
 
+/** Reset (internal) log system variables.
+This restores a zero indentation level, and optionally clears the checkpoint
+pass counters (if `with_checkpoints` is set).
+*/
 void log_reset(bool with_checkpoints) {
 	indent_level = 0;
 	if (with_checkpoints)
 		clear_checkpoints(); // remove checkpoints, = reset all pass counts to 0
-	// TODO: send LOG_LEVEL_CLEAR to all backends?
+	// TODO: send LOG_LEVEL_CLEAR notification to all backends?
+	// TODO: reset `serial`?
 }
 
 /* DEPRECATED (use logstdio instead now)
@@ -205,10 +209,10 @@ void log_stream(FILE *stream, const char *module, const char *fmt, ...) {
 
 // Private helper function to process ("send") a log message. This is done
 // by passing the message (sbuffer) to each of the available backends.
-static void sbuffer_log_send(msgpack_sbuffer *sbuffer) {
+static void sbuffer_log_send(msgpack_sbuffer *sbuffer, LOG_LEVEL level) {
 	backend_list_t *entry;
 	LIST_ITERATE(entry, log_backends)
-		entry->callback(sbuffer, entry->userptr);
+		entry->callback(sbuffer, level, entry->userptr);
 }
 
 // Private helper function to transform (= serialize) a log "event"/message to
@@ -297,7 +301,7 @@ void attach_log_level(msgpack_object *attachment, LOG_LEVEL level,
 	msgpack_sbuffer_init(&sbuf);
 	sbuffer_log_level(&sbuf, attachment, level, PID, origin, msg, len);
 	//msgpack_dump(sbuf.data, sbuf.size); // dump the msgpack object
-	sbuffer_log_send(&sbuf); // process sbuffer HERE (pass it to backends)
+	sbuffer_log_send(&sbuf, level); // process sbuffer (pass it to backends)
 	msgpack_sbuffer_destroy(&sbuf);
 }
 

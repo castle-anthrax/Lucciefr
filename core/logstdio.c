@@ -17,8 +17,8 @@ Use log_stdio() to register a new logger.
 
 /// output MessagePack object to stream in text format
 void log_text(FILE *stream, msgpack_object *msg) {
-// helper macro to access a specific array element
-#define MEMBER(n)	msg->via.array.ptr[n]
+	// helper macro to access a specific array element
+	#define MEMBER(n)	msg->via.array.ptr[n]
 
 	//msgpack_object_print(stream, *msg); // (print msgpack array, DEBUG only)
 
@@ -79,32 +79,34 @@ void log_text(FILE *stream, msgpack_object *msg) {
 	fflush(stream);
 }
 
-// logging backend callback (log sbuffer to FILE *userptr)
-static void log_stdio_callback(msgpack_sbuffer *logmsg, void *userptr) {
-/*
-	// we need to deserialize the MessagePack object here (instead of
-	// within log_text), so we can access the "level" array member...
-*/
-	if (userptr) {
-	// deserialize sbuffer into object
+/// output MessagePack sbuffer to stream in text format
+static void log_text_sbuffer(FILE *stream, msgpack_sbuffer *msg) {
+	// deserialize sbuffer to object
 	msgpack_zone mempool;
 	msgpack_zone_init(&mempool, 1024);
 	msgpack_object deserialized;
-	msgpack_unpack(logmsg->data, logmsg->size, NULL, &mempool, &deserialized);
-
+	msgpack_unpack(msg->data, msg->size, NULL, &mempool, &deserialized);
 	// now output the message object
-/*
-	FILE *output = userptr;
-	if (!output) {
-		LOG_LEVEL level = deserialized.via.array.ptr[0].via.u64;
-		output = (level == LOG_LEVEL_ERROR || level == LOG_LEVEL_FATAL)
-			? stderr : stdout;
-	}
-*/
-	//log_text(output, &deserialized); // log MessagePack object in text form
-	log_text(userptr, &deserialized); // log MessagePack object in text form
-
+	log_text(stream, &deserialized);
+	// and free up memory
 	msgpack_zone_destroy(&mempool);
+}
+
+// logging backend callback (log sbuffer to FILE *userptr)
+static void log_stdio_callback(msgpack_sbuffer *logmsg, LOG_LEVEL level,
+							   void *userptr)
+{
+	if (userptr) {
+/*
+		FILE *output = userptr;
+		if (!output) {
+			LOG_LEVEL level = deserialized.via.array.ptr[0].via.u64;
+			output = (level == LOG_LEVEL_ERROR || level == LOG_LEVEL_FATAL)
+				? stderr : stdout;
+		}
+*/
+		//log_text_sbuffer(output, logmsg); // log MessagePack object in text form
+		log_text_sbuffer(userptr, logmsg); // log MessagePack object in text form
 	}
 }
 
