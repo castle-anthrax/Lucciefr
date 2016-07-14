@@ -2,8 +2,8 @@
 #	tests/Makefile
 #
 CFLAGS := -Wall -Werror
-CFLAGS += -I../include -I../core -I../msgpack-c/include -I../luajit/src
-LIBS := ../lib/core.a ../lib/msgpack.a ../luajit/src/libluajit.a
+CFLAGS += $(subst -I,-I../,$(INCL))
+XLIBS := $(addprefix ../,$(LIBS))
 
 include ../Makefile.inc
 
@@ -12,8 +12,8 @@ SANDBOX := sandbox$(EXE)
 check: $(SANDBOX)
 	./$(SANDBOX)
 
-$(SANDBOX): sandbox.c $(wildcard test_*.c) $(LIBS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LIBS) -lm $(DYNAMIC)
+$(SANDBOX): sandbox.c $(wildcard test_*.c) $(XLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(XLIBS) -lm $(DYNAMIC)
 
 clean:
 	rm -f $(SANDBOX)

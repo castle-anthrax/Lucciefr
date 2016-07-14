@@ -62,7 +62,7 @@ doxygen: docs/Doxyfile
 
 # build sandbox application and run tests
 check: $(CORE) $(MSGPACK) $(LUA)
-	make -C tests/
+	make -C tests/ INCL="$(INCL)" LIBS="$^"
 
 # prepare build (create directories)
 prepare: $(OBJ) $(LIB)
