@@ -1,5 +1,4 @@
 #include "log.h"
-#include "logstdio.h"
 #include "mpkutils.h"
 #include "timing.h"
 
@@ -39,8 +38,6 @@ static void logtest_setup_buffer(msgpack_sbuffer *sbuf) {
 }
 
 void test_core_log(void) {
-	log_stdio("stdout");
-
 	check("foobar");
 	separator();
 
@@ -82,6 +79,4 @@ void test_core_log(void) {
 	scratch("clue", "bat");
 	check("foobar");
 	leave("leave");
-
-	log_shutdown();
 }

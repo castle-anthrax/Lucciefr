@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "config.h"
+#include "logstdio.h"
 
 #include "test_core.c"
 #include "test_lua.c"
@@ -12,6 +13,7 @@ int main() {
 	printf(" @" COMMIT_ID);
 #endif
 	putchar('\n');
+	log_stdio("stdout");
 
 	test_core_bits();
 	test_core_time();
@@ -21,6 +23,7 @@ int main() {
 
 	test_lib();
 
+	log_shutdown();
 	printf("Done.\n");
 	return 0;
 }
