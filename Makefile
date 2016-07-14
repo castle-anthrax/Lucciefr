@@ -2,6 +2,9 @@
 #	Lucciefr (top-level) Makefile
 #
 
+CFLAGS ?= -Wall -Wno-comment
+#CFLAGS += -Werror
+
 include Makefile.inc
 
 # misc
