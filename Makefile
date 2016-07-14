@@ -15,8 +15,16 @@ LIB = lib/
 #file sets
 CORE_C = $(wildcard core/*.c)
 CORE_O = $(addprefix $(OBJ), $(notdir $(CORE_C:.c=.o)))
+CORE_LUA := $(wildcard core/*.lua)
+CORE_LUA_O := $(addprefix $(OBJ), $(notdir $(CORE_LUA:.lua=.core.lua.o)))
 
+# we use a small Lua utility that "wraps" .lua scripts into binary resources
+# (use @ to suppress command output, as objwrap.lua will echo a 'short' version of it)
+BINWRAP=@$(LUA_DIR)/luajit objwrap.lua "$(OCPY) $(OFLAGS)"
+
+# ---------------------------------------------------------------------------
 # libs
+# ---------------------------------------------------------------------------
 
 # core
 CORE = $(LIB)core.a
@@ -38,17 +46,23 @@ INCL += -Imsgpack-c/include
 $(MSGPACK): prepare
 	make -C msgpack-c/ -f Makefile.lcfr LIB=../$(MSGPACK)
 
+# ---------------------------------------------------------------------------
+
 # build rules to create $(OBJ) files from source
 $(OBJ)%.o: core/%.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
+$(OBJ)%.core.lua.o: core/%.lua $(LUA)
+	$(BINWRAP) $< $@
 
 # shared library target ("main" dll), e.g. lucciefr-win32.dll
-MAIN_LIBS := $(CORE) $(MSGPACK) $(LUA)
+MAIN_LIBS := $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)
 MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
 $(MAIN): $(wildcard main/$(TARGET)*.c)
 	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^ $(MAIN_LIBS)
 main: prepare $(MAIN_LIBS) $(MAIN)
 
+
+# ---------------------------------------------------------------------------
 
 # generate documentation
 docs: doxygen

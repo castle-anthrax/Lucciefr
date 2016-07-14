@@ -6,6 +6,7 @@
 #TOOLCHAIN := i686-w64-mingw32-
 CC := $(TOOLCHAIN)gcc
 AR := $(TOOLCHAIN)ar
+OCPY := $(TOOLCHAIN)objcopy
 
 # name prefixes
 PREFIX_LONG  = lucciefr
@@ -32,6 +33,9 @@ else
 		TARGET := win
 		EXE := .exe
 		DLL := .dll
+		OFLAGS := --change-leading-char
+		BINFMT_32 := pei-i386
+		BINFMT_64 := pei-x86-64
 
 	endif
 endif
@@ -47,6 +51,8 @@ DEBUG ?= 0
 LINUX ?= 0
 DARWIN ?= 0
 WINDOWS ?= 0
+BINFMT_32 ?= elf32-i386
+BINFMT_64 ?= elf64-x86-64
 
 BUILDVARS := -D_GNU_SOURCE
 BUILDVARS += -DBITS=$(BITS)
@@ -63,3 +69,11 @@ else
 endif
 
 CFLAGS += -m$(BITS) $(BUILDVARS)
+
+# objcopy flags
+OFLAGS += -I binary -B i386
+ifeq ($(BITS), 32)
+	OFLAGS += -O $(BINFMT_32)
+else
+	OFLAGS += -O $(BINFMT_64)
+endif

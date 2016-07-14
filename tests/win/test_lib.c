@@ -18,6 +18,11 @@ HMODULE test_lib_load(const char *libname) {
 	return result;
 }
 
+// test dynamic symbol resolution (= locate binary resource)
+void *test_lib_symbol(void *handle, const char *symbol) {
+	return GetProcAddress(handle, symbol);
+}
+
 // close library handle (= release lib)
 void test_lib_unload(HMODULE handle) {
 	BOOL result = FreeLibrary(handle);

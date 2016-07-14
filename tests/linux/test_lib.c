@@ -28,6 +28,11 @@ void *test_lib_load(const char *libname) {
 	return result;
 }
 
+// test dynamic symbol resolution (= locate binary resource)
+void *test_lib_symbol(void *handle, const char *symbol) {
+	return dlsym(handle, symbol);
+}
+
 // close library handle (= release lib)
 void test_lib_unload(void *handle) {
 	// notify library by calling shutdown function

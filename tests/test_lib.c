@@ -29,6 +29,9 @@ void test_lib(void) {
 	void *handle = test_lib_load(libname); // load library
 	info("Dynamic library handle = %p", handle);
 	assert(handle != NULL);
+	void *symbol = test_lib_symbol(handle, "core_banner_lua_binary_obj_data_start"); // try to locate dynamic symbol
+	info("symbol('core_banner_lua_binary_obj_data_start') = %p", symbol);
+	//assert(symbol != NULL);
 	Sleep(1000);
 	test_lib_unload(handle); // release/free library
 }
