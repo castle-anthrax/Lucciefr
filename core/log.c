@@ -141,14 +141,18 @@ void log_unregister_backend(backend_callback_t *callback, void *userptr) {
 This is to give backends the opportunity to flush any outstanding messages,
 and to free up resources before the log system terminates.
 */
-// TODO: use LIST_ITERATE_REVERSED and unregister / free up log_backends
-// at the same time?
+// DONE: unregister / free up log_backends at the same time?
 void log_shutdown(void) {
-	backend_list_t *entry;
+	backend_list_t *entry, *next;
+	/*
 	LIST_ITERATE(entry, log_backends)
 		log_backend_notify(entry, LOG_NOTIFY_SHUTDOWN);
-
+	*/
 	clear_checkpoints();
+	for (entry = log_backends; entry; entry = next) {
+		next = entry->next;
+		log_unregister_backend(entry->callback, entry->userptr);
+	}
 }
 
 /** Reset (internal) log system variables.

@@ -36,6 +36,7 @@ Copyright 2015 by the Lucciefr team
 #include "ringbuffer.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 /** "constructor", prepare a ringbuffer_t before usage
 @param rb the ring buffer to use
@@ -101,6 +102,18 @@ void ringbuffer_push(ringbuffer_t *rb, void *element) {
 			ringbuffer_inc_tail(rb);
 		}
 	}
+}
+
+/** push a copy of a (temporary) memory buffer.
+This is a helper function that will first do a `malloc(size)` and then copy
+the `buffer` contents. You may use this if you wish to ringbuffer_push() some
+"volatile" data, where the buffer pointer gets invalidated afterwards.
+*/
+void ringbuffer_push_copy(ringbuffer_t *rb, void *buffer, size_t size) {
+	if (size == 0 || !buffer) return;
+	void *copy = malloc(size);
+	if (copy)
+		ringbuffer_push(rb, memcpy(copy, buffer, size));
 }
 
 /// discard the oldest entry ("tail" element) from the buffer.

@@ -22,6 +22,7 @@ void ringbuffer_init(ringbuffer_t *rb, size_t capacity, free_func_t free_func);
 void ringbuffer_done(ringbuffer_t *rb);
 
 void ringbuffer_push(ringbuffer_t *rb, void *element);
+void ringbuffer_push_copy(ringbuffer_t *rb, void *buffer, size_t size);
 void ringbuffer_pop(ringbuffer_t *rb);
 void ringbuffer_clear(ringbuffer_t *rb);
 void ringbuffer_resize(ringbuffer_t *rb, size_t new_capacity);
