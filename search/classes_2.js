@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ringbuffer_5ft',['ringbuffer_t',['../structringbuffer__t.html',1,'']]]
+  ['lcfr_5fglobals_5ft',['lcfr_globals_t',['../structlcfr__globals__t.html',1,'']]]
 ];

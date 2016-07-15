@@ -97,6 +97,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="ringbuffer_8h_source.html">ringbuffer.h</a>&quot;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -111,6 +112,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ring
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ringbuffer_8c.html#afb86c8b8d2f549a92ea89ed1d2d7dab1">ringbuffer_push</a> (<a class="el" href="structringbuffer__t.html">ringbuffer_t</a> *rb, void *element)</td></tr>
 <tr class="memdesc:afb86c8b8d2f549a92ea89ed1d2d7dab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">push an element pointer to the ring buffer (new "head" entry) <br /></td></tr>
 <tr class="separator:afb86c8b8d2f549a92ea89ed1d2d7dab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1a6eb62d959539a9ece9db2ae643c1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ringbuffer_8c.html#ae1a6eb62d959539a9ece9db2ae643c1a">ringbuffer_push_copy</a> (<a class="el" href="structringbuffer__t.html">ringbuffer_t</a> *rb, void *buffer, size_t size)</td></tr>
+<tr class="memdesc:ae1a6eb62d959539a9ece9db2ae643c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of a (temporary) memory buffer.  <a href="#ae1a6eb62d959539a9ece9db2ae643c1a">More...</a><br /></td></tr>
+<tr class="separator:ae1a6eb62d959539a9ece9db2ae643c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3a76d299009734662111e96abbd5e8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ringbuffer_8c.html#af3a76d299009734662111e96abbd5e8b">ringbuffer_pop</a> (<a class="el" href="structringbuffer__t.html">ringbuffer_t</a> *rb)</td></tr>
 <tr class="memdesc:af3a76d299009734662111e96abbd5e8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">discard the oldest entry ("tail" element) from the buffer.  <a href="#af3a76d299009734662111e96abbd5e8b">More...</a><br /></td></tr>
 <tr class="separator:af3a76d299009734662111e96abbd5e8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -230,6 +234,41 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ri
 
 </div>
 </div>
+<a class="anchor" id="ae1a6eb62d959539a9ece9db2ae643c1a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ringbuffer_push_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structringbuffer__t.html">ringbuffer_t</a> *&#160;</td>
+          <td class="paramname"><em>rb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>push a copy of a (temporary) memory buffer. </p>
+<p>This is a helper function that will first do a <code>malloc(size)</code> and then copy the <code>buffer</code> contents. You may use this if you wish to <a class="el" href="ringbuffer_8c.html#afb86c8b8d2f549a92ea89ed1d2d7dab1" title="push an element pointer to the ring buffer (new &quot;head&quot; entry) ">ringbuffer_push()</a> some "volatile" data, where the buffer pointer gets invalidated afterwards. </p>
+
+</div>
+</div>
 <a class="anchor" id="a35f9a507905ad794d320040437ccca25"></a>
 <div class="memitem">
 <div class="memproto">
@@ -290,7 +329,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ri
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 4 2016 12:36:31 for Lucciefr by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 15 2016 17:25:54 for Lucciefr by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['entries',['entries',['../structringbuffer__t.html#ae30f8a198927747043bf736627977392',1,'ringbuffer_t']]]
+  ['dllpath',['dllpath',['../structlcfr__globals__t.html#a2e5d333164869e4234763c517dffa0c6',1,'lcfr_globals_t']]]
 ];

@@ -12,6 +12,9 @@ var searchData=
   ['hash_5fwstr_5fmulxor',['hash_wstr_mulXor',['../strutils_8c.html#aaa54b6d00efa70bf51d2221dc1acebfa',1,'hash_wstr_mulXor(int32_t init, int32_t factor, const wchar_t *key, size_t length, size_t step):&#160;strutils.c'],['../strutils_8h.html#aaa54b6d00efa70bf51d2221dc1acebfa',1,'hash_wstr_mulXor(int32_t init, int32_t factor, const wchar_t *key, size_t length, size_t step):&#160;strutils.c']]],
   ['hash_5fwstr_5fsdbm',['hash_wstr_sdbm',['../strutils_8c.html#a5b0f116b4b90880d3d646ca3b30ff268',1,'hash_wstr_sdbm(const wchar_t *key, size_t length, size_t step):&#160;strutils.c'],['../strutils_8h.html#a5b0f116b4b90880d3d646ca3b30ff268',1,'hash_wstr_sdbm(const wchar_t *key, size_t length, size_t step):&#160;strutils.c']]],
   ['hash_5fwstr_5fxormul',['hash_wstr_xorMul',['../strutils_8c.html#a9af352cefc468e5955957f54e2afb770',1,'hash_wstr_xorMul(int32_t init, int32_t factor, const wchar_t *key, size_t length, size_t step):&#160;strutils.c'],['../strutils_8h.html#a9af352cefc468e5955957f54e2afb770',1,'hash_wstr_xorMul(int32_t init, int32_t factor, const wchar_t *key, size_t length, size_t step):&#160;strutils.c']]],
+  ['hexdump',['hexdump',['../utils_8c.html#ae8f6a8e864be9ab8419fc297b0c494f7',1,'hexdump(const uint8_t *addr, size_t len):&#160;utils.c'],['../utils_8h.html#ae8f6a8e864be9ab8419fc297b0c494f7',1,'hexdump(const uint8_t *addr, size_t len):&#160;utils.c']]],
   ['hextoi',['hextoi',['../strutils_8c.html#ae568e6ccdc5b223226938180163906f9',1,'hextoi(const char *str):&#160;strutils.c'],['../strutils_8h.html#ae568e6ccdc5b223226938180163906f9',1,'hextoi(const char *str):&#160;strutils.c']]],
-  ['hh',['hh',['../structcheckpoint__entry__t.html#af68725dcd419993931a32c0915879302',1,'checkpoint_entry_t']]]
+  ['hh',['hh',['../structcheckpoint__entry__t.html#af68725dcd419993931a32c0915879302',1,'checkpoint_entry_t']]],
+  ['hself',['hself',['../structlcfr__globals__t.html#ae92611be1df8c4c7cd5a6660582d191a',1,'lcfr_globals_t']]],
+  ['htarget',['htarget',['../structlcfr__globals__t.html#a66e3de67d698695919c9f42e997e5e25',1,'lcfr_globals_t']]]
 ];

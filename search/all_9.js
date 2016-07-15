@@ -1,5 +1,12 @@
 var searchData=
 [
+  ['lcfr_5fglobals',['lcfr_globals',['../globals_8c.html#a1a7429a61ff2952e66a3678848b721f0',1,'globals.c']]],
+  ['lcfr_5fglobals_5ft',['lcfr_globals_t',['../structlcfr__globals__t.html',1,'']]],
+  ['lengthof',['lengthof',['../macro_8h.html#ad53b2827d15d4f100433764eea395a94',1,'macro.h']]],
+  ['lenum',['LENUM',['../luahelpers_8h.html#a722d254d9485d491253b2bf767110f9d',1,'luahelpers.h']]],
+  ['libhandle',['libhandle',['../structlcfr__globals__t.html#a3208770895771c1ede32daf18c802dbd',1,'lcfr_globals_t']]],
+  ['library_5fshutdown',['library_shutdown',['../dllmain-linux_8c.html#a3c02d779cfd739270bd4d972a61ca70b',1,'library_shutdown(void *userptr):&#160;dllmain-linux.c'],['../dllmain-win_8c.html#a3c02d779cfd739270bd4d972a61ca70b',1,'library_shutdown(void *userptr):&#160;dllmain-win.c'],['../dllmain_8c.html#a3c02d779cfd739270bd4d972a61ca70b',1,'library_shutdown(void *userptr):&#160;dllmain-linux.c']]],
+  ['library_5fstartup',['library_startup',['../dllmain-linux_8c.html#a4967ccec5e367692195a345bb868f4f3',1,'library_startup(void *base_addr, void *userptr):&#160;dllmain-linux.c'],['../dllmain-win_8c.html#a4967ccec5e367692195a345bb868f4f3',1,'library_startup(void *base_addr, void *userptr):&#160;dllmain-win.c'],['../dllmain_8c.html#a4967ccec5e367692195a345bb868f4f3',1,'library_startup(void *base_addr, void *userptr):&#160;dllmain-linux.c']]],
   ['list_2eh',['list.h',['../list_8h.html',1,'']]],
   ['list_5fappend',['LIST_APPEND',['../list_8h.html#a0703e22ef1c0d111df6830bc4e032afe',1,'list.h']]],
   ['list_5fcount',['LIST_COUNT',['../list_8h.html#a947d0230baa64a7738e3ff0db447a290',1,'list.h']]],
@@ -11,7 +18,6 @@ var searchData=
   ['list_5fmatch',['LIST_MATCH',['../list_8h.html#a9f3a19afa9b1934e3e1dda362d798b86',1,'list.h']]],
   ['log_2ec',['log.c',['../log_8c.html',1,'']]],
   ['log_2eh',['log.h',['../log_8h.html',1,'']]],
-  ['log_5fbackends',['log_backends',['../log_8c.html#af383ca89ce23d5680b46d6bf1b4e84ad',1,'log.c']]],
   ['log_5flevel',['LOG_LEVEL',['../log_8h.html#aa5a9053636a30269210c54e734e0d583',1,'log.h']]],
   ['log_5flevel_5fcheckpoint',['LOG_LEVEL_CHECKPOINT',['../log_8h.html#aa5a9053636a30269210c54e734e0d583a3d3109df4dc0a616e41e154640f330f1',1,'log.h']]],
   ['log_5flevel_5fclear',['LOG_LEVEL_CLEAR',['../log_8h.html#aa5a9053636a30269210c54e734e0d583a847d258451640020dc4ea8d49fc2203e',1,'log.h']]],
@@ -34,6 +40,7 @@ var searchData=
   ['log_5fnotify_5fshutdown',['LOG_NOTIFY_SHUTDOWN',['../log_8h.html#aef65952ff6a403229d0be5fa42abdfbbaba9becfdaec51057d15488185a7c39a7',1,'log.h']]],
   ['log_5forigin',['LOG_ORIGIN',['../log_8h.html#a3f00b77dcdfe35a191ee7208fabc29d6',1,'log.h']]],
   ['log_5fregister_5fbackend',['log_register_backend',['../log_8c.html#a32846f5274c64ab4dcbe8c0ad9febaf6',1,'log_register_backend(backend_callback_t *callback, backend_command_t *notify, void *userptr):&#160;log.c'],['../log_8h.html#a32846f5274c64ab4dcbe8c0ad9febaf6',1,'log_register_backend(backend_callback_t *callback, backend_command_t *notify, void *userptr):&#160;log.c']]],
+  ['log_5freset',['log_reset',['../log_8c.html#a8c37ae755f43bc6b1a9d378a9c768279',1,'log_reset(bool with_checkpoints):&#160;log.c'],['../log_8h.html#a8c37ae755f43bc6b1a9d378a9c768279',1,'log_reset(bool with_checkpoints):&#160;log.c']]],
   ['log_5fscratch',['log_scratch',['../log_8c.html#a657639e8028feaa662e85648ccaf5fc6',1,'log_scratch(const char *origin, const char *key, const char *value):&#160;log.c'],['../log_8h.html#a657639e8028feaa662e85648ccaf5fc6',1,'log_scratch(const char *origin, const char *key, const char *value):&#160;log.c']]],
   ['log_5fshutdown',['log_shutdown',['../log_8c.html#a8a87f4bbb465c4e00e07605d0b464b49',1,'log_shutdown(void):&#160;log.c'],['../log_8h.html#a8a87f4bbb465c4e00e07605d0b464b49',1,'log_shutdown(void):&#160;log.c']]],
   ['log_5fstdio',['log_stdio',['../logstdio_8c.html#a0977182c361351b1462a9c720362e077',1,'log_stdio(const char *filename):&#160;logstdio.c'],['../logstdio_8h.html#a0977182c361351b1462a9c720362e077',1,'log_stdio(const char *filename):&#160;logstdio.c']]],
@@ -41,5 +48,18 @@ var searchData=
   ['log_5funregister_5fbackend',['log_unregister_backend',['../log_8c.html#a75c23563de0b712f1760e08f801856a8',1,'log_unregister_backend(backend_callback_t *callback, void *userptr):&#160;log.c'],['../log_8h.html#a75c23563de0b712f1760e08f801856a8',1,'log_unregister_backend(backend_callback_t *callback, void *userptr):&#160;log.c']]],
   ['logstdio_2ec',['logstdio.c',['../logstdio_8c.html',1,'']]],
   ['logstdio_2eh',['logstdio.h',['../logstdio_8h.html',1,'']]],
-  ['ltrim_5fofs',['ltrim_ofs',['../strutils_8c.html#a233f0820463b8c39b71ed7887753f5cf',1,'ltrim_ofs(const char *s, size_t *len):&#160;strutils.c'],['../strutils_8h.html#a233f0820463b8c39b71ed7887753f5cf',1,'ltrim_ofs(const char *s, size_t *len):&#160;strutils.c']]]
+  ['lreg',['LREG',['../luahelpers_8h.html#abae5caa95f0fbd5a249c4174c06fdf8b',1,'luahelpers.h']]],
+  ['lreg_5fname',['LREG_NAME',['../luahelpers_8h.html#acc092e9947b88feee5d72fae59efbf28',1,'luahelpers.h']]],
+  ['ltrim_5fofs',['ltrim_ofs',['../strutils_8c.html#a233f0820463b8c39b71ed7887753f5cf',1,'ltrim_ofs(const char *s, size_t *len):&#160;strutils.c'],['../strutils_8h.html#a233f0820463b8c39b71ed7887753f5cf',1,'ltrim_ofs(const char *s, size_t *len):&#160;strutils.c']]],
+  ['lua_5fabsidx',['LUA_ABSIDX',['../luahelpers_8h.html#ad334406faade87705ba053fe72ebf598',1,'luahelpers.h']]],
+  ['lua_5fcfunc',['LUA_CFUNC',['../luahelpers_8h.html#a6ae03e39ed1c92d9a7939fafa7b26a22',1,'luahelpers.h']]],
+  ['lua_5fcheckidx',['LUA_CHECKIDX',['../luahelpers_8h.html#a6c7e84ecb57e6d0ed9acbfb89df75db8',1,'luahelpers.h']]],
+  ['lua_5fchkabsidx',['LUA_CHKABSIDX',['../luahelpers_8h.html#abb457722bb42c9b489c3ab2f3e85222c',1,'luahelpers.h']]],
+  ['lua_5fiscdata',['lua_iscdata',['../luahelpers_8h.html#a328051ba67ee6798a092b28365288cca',1,'luahelpers.h']]],
+  ['lua_5fsetglobal_5fint',['lua_setglobal_int',['../luahelpers_8h.html#a4e5db86e58b5e412108a69d11bc835d5',1,'luahelpers.h']]],
+  ['lua_5fsetglobal_5fptr',['lua_setglobal_ptr',['../luahelpers_8h.html#a3e39f5d3b25f15ad49d6ebabca07a44e',1,'luahelpers.h']]],
+  ['lua_5fsetglobal_5fstr',['lua_setglobal_str',['../luahelpers_8h.html#a1bb5785fd42d5d47e5ddfde11701f29c',1,'luahelpers.h']]],
+  ['lua_5fstate',['lua_state',['../structlcfr__globals__t.html#a8edc3dd4a6839b7d6b00ec977afefc5f',1,'lcfr_globals_t']]],
+  ['luahelpers_2eh',['luahelpers.h',['../luahelpers_8h.html',1,'']]],
+  ['lual_5ferror_5ffname',['luaL_error_fname',['../luahelpers_8h.html#a19e846e0943516a7537e012159a70979',1,'luahelpers.h']]]
 ];

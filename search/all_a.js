@@ -1,5 +1,8 @@
 var searchData=
 [
+  ['macro_2eh',['macro.h',['../macro_8h.html',1,'']]],
+  ['max',['MAX',['../macro_8h.html#aacc3ee1a7f283f8ef65cea31f4436a95',1,'macro.h']]],
+  ['min',['MIN',['../macro_8h.html#a74e75242132eaabbc1c512488a135926',1,'macro.h']]],
   ['mpkutils_2ec',['mpkutils.c',['../mpkutils_8c.html',1,'']]],
   ['mpkutils_2eh',['mpkutils.h',['../mpkutils_8h.html',1,'']]],
   ['msgpack_5fobject_5ffrom_5fliteral',['msgpack_object_from_literal',['../mpkutils_8h.html#a5bd84095bf91a1cab9762ef42362bf12',1,'mpkutils.h']]],

@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['format_5ftimestamp',['format_timestamp',['../timing_8c.html#a91550b6bf822955871d646fcdfb912c5',1,'format_timestamp(char *buffer, size_t len, const char *format, double timestamp, bool local):&#160;timing.c'],['../timing_8h.html#a91550b6bf822955871d646fcdfb912c5',1,'format_timestamp(char *buffer, size_t len, const char *format, double timestamp, bool local):&#160;timing.c']]],
-  ['formatmsg',['formatmsg',['../strutils_8c.html#a1b43502290ae8253472d0f5466df22e5',1,'formatmsg(const char *fmt,...):&#160;strutils.c'],['../strutils_8h.html#a1b43502290ae8253472d0f5466df22e5',1,'formatmsg(const char *fmt,...):&#160;strutils.c']]],
-  ['formatmsg_5flen',['formatmsg_len',['../strutils_8c.html#afa3e69f6bb29fdd552c6749bca937d05',1,'formatmsg_len(char **msg, const char *fmt,...):&#160;strutils.c'],['../strutils_8h.html#afa3e69f6bb29fdd552c6749bca937d05',1,'formatmsg_len(char **msg, const char *fmt,...):&#160;strutils.c']]]
+  ['dllmain',['DllMain',['../dllmain-win_8c.html#af5d62d88a85b87925138f29103bb7ef6',1,'dllmain-win.c']]]
 ];

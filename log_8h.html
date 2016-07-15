@@ -244,10 +244,10 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a885e7a8eff285ac33ccd2de24ca7bddd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a885e7a8eff285ac33ccd2de24ca7bddd"></a>
-typedef void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a885e7a8eff285ac33ccd2de24ca7bddd">backend_callback_t</a>(msgpack_sbuffer *logmsg, void *userptr)</td></tr>
-<tr class="memdesc:a885e7a8eff285ac33ccd2de24ca7bddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">prototype for a logging backend callback function <br /></td></tr>
-<tr class="separator:a885e7a8eff285ac33ccd2de24ca7bddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a346d00f9d8aecbc37a46e4e3e22f8abe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a346d00f9d8aecbc37a46e4e3e22f8abe"></a>
+typedef void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a346d00f9d8aecbc37a46e4e3e22f8abe">backend_callback_t</a>(msgpack_sbuffer *logmsg, <a class="el" href="log_8h.html#aa5a9053636a30269210c54e734e0d583">LOG_LEVEL</a> level, void *userptr)</td></tr>
+<tr class="memdesc:a346d00f9d8aecbc37a46e4e3e22f8abe"><td class="mdescLeft">&#160;</td><td class="mdescRight">prototype for a logging backend callback function <br /></td></tr>
+<tr class="separator:a346d00f9d8aecbc37a46e4e3e22f8abe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06c0c3ebd23a782e9cab83ac03a12f33"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06c0c3ebd23a782e9cab83ac03a12f33"></a>
 typedef void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a06c0c3ebd23a782e9cab83ac03a12f33">backend_command_t</a>(<a class="el" href="log_8h.html#aef65952ff6a403229d0be5fa42abdfbb">LOG_NOTIFY</a> reason, void *userptr)</td></tr>
 <tr class="memdesc:a06c0c3ebd23a782e9cab83ac03a12f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">prototype for a logging backend "command"/notification function <br /></td></tr>
@@ -286,18 +286,18 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a32846f5274c64ab4dcbe8c0ad9febaf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a32846f5274c64ab4dcbe8c0ad9febaf6">log_register_backend</a> (<a class="el" href="log_8h.html#a885e7a8eff285ac33ccd2de24ca7bddd">backend_callback_t</a> *callback, <a class="el" href="log_8h.html#a06c0c3ebd23a782e9cab83ac03a12f33">backend_command_t</a> *notify, void *userptr)</td></tr>
+<tr class="memitem:a32846f5274c64ab4dcbe8c0ad9febaf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a32846f5274c64ab4dcbe8c0ad9febaf6">log_register_backend</a> (<a class="el" href="log_8h.html#a346d00f9d8aecbc37a46e4e3e22f8abe">backend_callback_t</a> *callback, <a class="el" href="log_8h.html#a06c0c3ebd23a782e9cab83ac03a12f33">backend_command_t</a> *notify, void *userptr)</td></tr>
 <tr class="memdesc:a32846f5274c64ab4dcbe8c0ad9febaf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a callback function to the list of logging backends.  <a href="#a32846f5274c64ab4dcbe8c0ad9febaf6">More...</a><br /></td></tr>
 <tr class="separator:a32846f5274c64ab4dcbe8c0ad9febaf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75c23563de0b712f1760e08f801856a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75c23563de0b712f1760e08f801856a8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a75c23563de0b712f1760e08f801856a8">log_unregister_backend</a> (<a class="el" href="log_8h.html#a885e7a8eff285ac33ccd2de24ca7bddd">backend_callback_t</a> *callback, void *userptr)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a75c23563de0b712f1760e08f801856a8">log_unregister_backend</a> (<a class="el" href="log_8h.html#a346d00f9d8aecbc37a46e4e3e22f8abe">backend_callback_t</a> *callback, void *userptr)</td></tr>
 <tr class="memdesc:a75c23563de0b712f1760e08f801856a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a callback function from the list of logging backends. <br /></td></tr>
 <tr class="separator:a75c23563de0b712f1760e08f801856a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a87f4bbb465c4e00e07605d0b464b49"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a8a87f4bbb465c4e00e07605d0b464b49">log_shutdown</a> (void)</td></tr>
 <tr class="memdesc:a8a87f4bbb465c4e00e07605d0b464b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify all the logging backends of impending shutdown.  <a href="#a8a87f4bbb465c4e00e07605d0b464b49">More...</a><br /></td></tr>
 <tr class="separator:a8a87f4bbb465c4e00e07605d0b464b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c37ae755f43bc6b1a9d378a9c768279"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c37ae755f43bc6b1a9d378a9c768279"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>log_reset</b> (bool with_checkpoints)</td></tr>
+<tr class="memitem:a8c37ae755f43bc6b1a9d378a9c768279"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a8c37ae755f43bc6b1a9d378a9c768279">log_reset</a> (bool with_checkpoints)</td></tr>
+<tr class="memdesc:a8c37ae755f43bc6b1a9d378a9c768279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset (internal) log system variables.  <a href="#a8c37ae755f43bc6b1a9d378a9c768279">More...</a><br /></td></tr>
 <tr class="separator:a8c37ae755f43bc6b1a9d378a9c768279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac83062aab2fb29fa76b26bdde3a0c5d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac83062aab2fb29fa76b26bdde3a0c5d0"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#ac83062aab2fb29fa76b26bdde3a0c5d0">log_level_string</a> (<a class="el" href="log_8h.html#aa5a9053636a30269210c54e734e0d583">LOG_LEVEL</a> level)</td></tr>
@@ -552,7 +552,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_
         <tr>
           <td class="memname">void log_register_backend </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="log_8h.html#a885e7a8eff285ac33ccd2de24ca7bddd">backend_callback_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#a346d00f9d8aecbc37a46e4e3e22f8abe">backend_callback_t</a> *&#160;</td>
           <td class="paramname"><em>callback</em>, </td>
         </tr>
         <tr>
@@ -587,6 +587,25 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_
 
 </div>
 </div>
+<a class="anchor" id="a8c37ae755f43bc6b1a9d378a9c768279"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_reset </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>with_checkpoints</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reset (internal) log system variables. </p>
+<p>This restores a zero indentation level, and optionally clears the checkpoint pass counters (if <code>with_checkpoints</code> is set). </p>
+
+</div>
+</div>
 <a class="anchor" id="a8a87f4bbb465c4e00e07605d0b464b49"></a>
 <div class="memitem">
 <div class="memproto">
@@ -609,7 +628,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 4 2016 12:36:31 for Lucciefr by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 15 2016 17:25:54 for Lucciefr by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>
