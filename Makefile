@@ -60,8 +60,8 @@ $(OBJ)%.core.lua.o: core/%.lua $(LUA)
 # shared library target ("main" dll), e.g. lucciefr-win32.dll
 MAIN_LIBS := $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)
 MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
-$(MAIN): $(wildcard main/$(TARGET)*.c)
-	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^ $(MAIN_LIBS)
+$(MAIN): main/dllmain.c $(MAIN_LIBS)
+	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^
 main: prepare $(MAIN_LIBS) $(MAIN)
 
 
