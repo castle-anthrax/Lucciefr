@@ -5,6 +5,7 @@ Windows implementation of library_startup() and library_shutdown()
 
 #include "logstdio.h"
 #include "log.h"
+//#include "utils.h"
 
 #include <windows.h>
 
@@ -32,6 +33,8 @@ void library_startup(void *base_addr, void *userptr) {
 	debug("hself    = %p", DLL_HANDLE);
 	debug("pagesize = %u", PAGESIZE);
 	debug("dllpath  = %s", lcfr_globals.dllpath);
+	//debug("dllpath  = %s", get_dll_path());
+	//debug("dlldir   = %s", get_dll_dir());
 }
 
 void library_shutdown(void *userptr) {
