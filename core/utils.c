@@ -1,5 +1,7 @@
-/// @file utils.c
+/** @file utils.c
 
+Various utility functions (not platform-specific, "portable")
+*/
 #include "utils.h"
 
 #include "globals.h"
@@ -13,6 +15,7 @@ We'll accept anything that's neither a control char nor DEL.
 */
 #define ISPRINT(c)	((c) >= 32 && (c) != 127)
 
+/// hex dump utility, prints `len` bytes from address `addr`
 void hexdump(const uint8_t *addr, size_t len) {
 	char hex[49], *p;
 	char txt[17], *c;
