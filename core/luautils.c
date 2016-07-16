@@ -8,7 +8,7 @@
 #include "log.h"
 #include "macro.h"
 #include "strutils.h"
-//#include "symbols.h"
+#include "symbols.h"
 #include "utils.h"
 
 #include <stdio.h>
@@ -499,7 +499,6 @@ bool luautils_isEmpty(lua_State *L, int idx) {
 // Use (stacktrace == true) to push an additional (verbose) error handler.
 // The return value is the status code from lua_pcall(). A non-zero value
 // indicates an error, with the error message on top of the Lua stack.
-#if 0
 int luautils_dofile(lua_State *L, const char *filename, bool stacktrace) {
 	int error_handler = 0;
 	if (stacktrace) {
@@ -517,7 +516,6 @@ int luautils_dofile(lua_State *L, const char *filename, bool stacktrace) {
 	if (stacktrace) lua_remove(L, error_handler);
 	return status;
 }
-#endif
 
 
 // Push a new sequential table ("array") with all the keys from a given table.

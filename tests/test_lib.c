@@ -5,6 +5,8 @@
 
 #include "globals.h"
 #include "log.h"
+#include "luautils.h"
+#include "symbols.h"
 #include "timing.h"
 
 #include <stdlib.h>
@@ -31,9 +33,14 @@ void test_lib(void) {
 	info("Dynamic library handle = %p", handle);
 	assert(handle != NULL);
 
-	void *symbol = test_lib_symbol(handle, "core_banner_lua_binary_obj_data_start"); // try to locate dynamic symbol
-	info("symbol('core_banner_lua_binary_obj_data_start') = %p", symbol);
-	//assert(symbol != NULL);
+	// test Lua with embedded resources (customized symbol loader)
+	lcfr_globals.libhandle = handle;
+	LUA = luaL_newstate();
+	luaL_openlibs(LUA);
+	luaopen_symbols(LUA);
+	luautils_dofile(LUA, "core/banner.lua", true);
+	lua_close(LUA);
+
 	Sleep(500);
 	test_lib_unload(handle); // release/free library
 }
