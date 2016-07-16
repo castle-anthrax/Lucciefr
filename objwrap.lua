@@ -25,7 +25,7 @@
 
 -- helper function: execute a (system) command, and make sure it succeeds
 function checked_execute(cmd)
-	print(cmd) -- DEBUG only
+	--print(cmd) -- DEBUG only
 	status = os.execute(cmd)
 	if status ~= 0 then
 		print(string.format("Execution of '%s' failed with status code %d - exiting.", cmd, status))
@@ -59,8 +59,7 @@ temp = dst:sub(1, dst:find("[^\\/]*$") - 1) .. temp -- (dir is taken from dst)
 -- on the resulting binary, this is normally done using (gzip) compression.
 -- If you don't want that, replace with a simply copy: cmd = string.format('cp "%s" "%s"', src, temp)
 
---cmd = string.format('gzip -n9c "%s" > "%s"', src, temp)
-cmd = string.format('cp "%s" "%s"', src, temp)
+cmd = string.format('gzip -n9c "%s" > "%s"', src, temp)
 checked_execute(cmd)
 
 
