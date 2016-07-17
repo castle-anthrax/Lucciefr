@@ -24,9 +24,9 @@
 ]]
 
 -- helper function: execute a (system) command, and make sure it succeeds
-function checked_execute(cmd)
+local function checked_execute(cmd)
 	--print(cmd) -- DEBUG only
-	status = os.execute(cmd)
+	local status = os.execute(cmd)
 	if status ~= 0 then
 		print(string.format("Execution of '%s' failed with status code %d - exiting.", cmd, status))
 		os.exit(status)
@@ -37,11 +37,11 @@ end
 --[[ main ]]--
 
 -- objcopy command (including any required format options) passed from make
-objcopy = arg[1] or error("missing <objcopy> command")
+local objcopy = arg[1] or error("missing <objcopy> command")
 
 -- filename arguments
-src = arg[2] or error("missing <source> filename")
-dst = arg[3] or error("missing <destination> filename")
+local src = arg[2] or error("missing <source> filename")
+local dst = arg[3] or error("missing <destination> filename")
 
 -- provide some short console echo
 -- (this is useful if the Makefile suppresses the invocation string, which tends to be rather long)
@@ -50,7 +50,7 @@ print(string.format("BINWRAP %s %s", src, dst))
 -- We want objcopy to produce short symbols (and not to include any
 -- unnecessary or misleading information based on the filename). To
 -- achieve that let's make it work on a temporary file with a fixed name.
-temp = "data" -- this is our 'base' name (that ends up as part of the symbols)
+local temp = "data" -- this is our 'base' name (that ends up as part of the symbols)
 
 temp = dst:sub(1, dst:find("[^\\/]*$") - 1) .. temp -- (dir is taken from dst)
 
@@ -59,7 +59,7 @@ temp = dst:sub(1, dst:find("[^\\/]*$") - 1) .. temp -- (dir is taken from dst)
 -- on the resulting binary, this is normally done using (gzip) compression.
 -- If you don't want that, replace with a simply copy: cmd = string.format('cp "%s" "%s"', src, temp)
 
-cmd = string.format('gzip -n9c "%s" > "%s"', src, temp)
+local cmd = string.format('gzip -n9c "%s" > "%s"', src, temp)
 checked_execute(cmd)
 
 
@@ -86,7 +86,7 @@ checked_execute(cmd)
 
 -- construct prefix from the source filename,
 -- by converting any non-alphanumeric characters to an underscore
-prefix = src:gsub("%W", "_")
+local prefix = src:gsub("%W", "_")
 
 -- build and execute the actual objcopy command (to work on the temporary filename)
 --cmd = objcopy .. string.format(' --change-leading-char --prefix-symbols=%s "%s"', prefix, temp)
@@ -96,7 +96,7 @@ checked_execute(cmd)
 -- and finally change the temporary file to the "real" destination name
 
 os.remove(dst) -- (otherwise rename would fail on existing dst)
-result, err = os.rename(temp, dst)
+local result, err = os.rename(temp, dst)
 if not result then error(err); end
 
 -- And we're done: Success!
