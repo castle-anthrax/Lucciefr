@@ -13,6 +13,8 @@ PREFIX_LONG  = lucciefr
 PREFIX_SHORT = lcfr
 
 LDFLAGS += -static-libgcc
+# "global" libs for linking: math
+LD_LIBS := -lm
 
 # platform specific rules:
 ARCH := $(shell uname -s)
@@ -21,28 +23,31 @@ ifeq ($(ARCH),Linux)
 	TARGET := lin
 	CFLAGS += -fPIC
 	DLL    := .so
+	# dynamic loading
+	LD_LIBS += -ldl
 
 else
 	ifeq ($(ARCH),Darwin) # MacOSX
 		DARWIN := 1
 		TARGET := osx
 		DLL := .so
+		# dynamic loading
+		LD_LIBS += -ldl
 
 	else  # Windows, MinGW
 		WINDOWS := 1
 		TARGET := win
 		EXE := .exe
 		DLL := .dll
-		OFLAGS := --change-leading-char
+		# PE format
 		BINFMT_32 := pei-i386
 		BINFMT_64 := pei-x86-64
+		# objcopy needs to add a '_' prefix
+		OFLAGS := --change-leading-char
+		# process API
+		LD_LIBS += -lpsapi
 
 	endif
-endif
-
-ifndef WINDOWS
-	# dynamic loading support
-	DYNAMIC := -ldl
 endif
 
 # default values for (unset) build vars

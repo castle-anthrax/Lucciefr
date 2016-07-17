@@ -13,7 +13,7 @@ check: $(SANDBOX)
 	./$(SANDBOX)
 
 $(SANDBOX): sandbox.c $(wildcard test_*.c) $(XLIBS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(XLIBS) -lm $(DYNAMIC)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(XLIBS) $(LD_LIBS)
 
 clean:
 	rm -f $(SANDBOX)
