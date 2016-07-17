@@ -128,7 +128,7 @@ size_t getExportedSymbolAsSizeValue(HMODULE module, int index) {
 inline void *getExportedSymbolByName(HMODULE module, const char *name) {
 /*
 	int i = getExportedSymbolCount(module);
-	while (--i >= 0) {
+	while (i-- > 0) {
 		char *func_name = getExportedSymbolName(module, i);
 		if (strcmp(func_name, name) == 0) return getExportedSymbol(module, i);	// return address for matching name
 	}
@@ -174,8 +174,8 @@ char *getBinarySymbol(const char *path, size_t *len, char *buffer, size_t size) 
 
 	// convert pattern to our symbol name prefix convention
 	// (which simply replaces any non-alphanumerical chars with '_')
-	unsigned int i;
-	for (i = strlen(pattern); i-- > 0; ) {
+	unsigned int i = strlen(pattern);
+	while (i-- > 0) {
 		if ('a' <= pattern[i] && pattern[i] <= 'z') continue;
 		if ('A' <= pattern[i] && pattern[i] <= 'Z') continue;
 		if ('0' <= pattern[i] && pattern[i] <= '9') continue;
@@ -185,15 +185,15 @@ char *getBinarySymbol(const char *path, size_t *len, char *buffer, size_t size) 
 	// append "binary" to the pattern, and allow partial matching later (ignore path)
 	//strcat(pattern, "_binary_");
 #endif
-	debug("%s() path:'%s', pattern:'%s'", __func__, path, pattern);
+	extra("%s() path:'%s', pattern:'%s'", __func__, path, pattern);
 
 	char temp[PATH_MAX + 32];
 	snprintf(temp, sizeof(temp), "%s_binary_obj_data_end", pattern);
 	end = getExportedSymbolByName(lcfr_globals.libhandle, temp);
-	debug("end symbol: %s = %p", temp, end);
+	extra("end symbol: %s = %p", temp, end);
 	snprintf(temp, sizeof(temp), "%s_binary_obj_data_start", pattern);
 	data = getExportedSymbolByName(lcfr_globals.libhandle, temp);
-	debug("start symbol: %s = %p", temp, data);
+	extra("start symbol: %s = %p", temp, data);
 
 	// we simply calculate *len (instead of relying on the XXX_size symbol)
 	if (data && end) {
@@ -305,7 +305,7 @@ LUA_CFUNC(symbol_dofile_C) {
 		char *caller = lua_callerPosition(L, 1);
 		char *msg = formatmsg("%s: executing dofile('%s') from %s",
 			__func__, strip_pwd(filename), strip_pwd(caller));
-		fire_C(L, "DEBUG_LOADERS", 0, msg);
+		//fire_C(L, "DEBUG_LOADERS", 0, msg); // TODO: FIX ME!
 		free(msg);
 		free(caller);
 #endif
@@ -321,7 +321,7 @@ LUA_CFUNC(symbol_dofile_C) {
 						  symbolname, strip_pwd(filename));
 	warn(msg);
 # if DEBUG_LOADERS
-	fire_C(L, "DEBUG_LOADERS", 0, msg);
+	//fire_C(L, "DEBUG_LOADERS", 0, msg); // TODO: FIX ME!
 # endif
 	free(msg);
 #endif
@@ -357,7 +357,7 @@ LUA_CFUNC(dll_symbolLoader_C) {
 	char *msg = formatmsg("%s: fallback to compiled-in '%s'", __func__, filename);
 	warn(msg);
 # if DEBUG_LOADERS
-	fire_C(L, "DEBUG_LOADERS", 0, msg);
+	//fire_C(L, "DEBUG_LOADERS", 0, msg); // TODO: FIX ME!
 # endif
 	free(msg);
 #endif
@@ -406,7 +406,7 @@ LUA_CFUNC(debuggingLoader_C) {
 	char *caller = lua_callerPosition(L, 2);
 	char *msg = formatmsg("%s: require('%s') from %s",
 		__func__, lua_tostring(L, 1), strip_pwd(caller));
-	fire_C(L, "DEBUG_LOADERS", 0, msg);
+	//fire_C(L, "DEBUG_LOADERS", 0, msg); // TODO: FIX ME!
 	free(msg);
 	free(caller);
 	return 0; // we don't return anything (nil)

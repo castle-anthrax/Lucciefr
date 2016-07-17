@@ -5,8 +5,10 @@ language: c
 
 env:
   matrix:
-    - BITS=32
-    - BITS=64
+    - BITS=32 DEBUG=0
+    - BITS=32 DEBUG=1
+    - BITS=64 DEBUG=0
+    - BITS=64 DEBUG=1
 
 addons:
   apt:

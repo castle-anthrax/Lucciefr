@@ -4,6 +4,9 @@ matrix:
   BITS:
     - 32
     - 64
+  DEBUG:
+    - 0
+    - 1
 
 build:
   image: teaci/msys$$BITS

@@ -12,11 +12,11 @@ Linux implementation of library_startup() and library_shutdown()
 
 void library_startup(void *base_addr, void *userptr) {
 	log_stdio("stdout");
-	debug("%s(%p,%p)", __func__, base_addr, userptr);
+	extra("%s(%p,%p)", __func__, base_addr, userptr);
 
 	Dl_info info;
 	dladdr(base_addr, &info);
-	debug("%s @ %p: %s = %p", info.dli_fname, info.dli_fbase, info.dli_sname, info.dli_saddr);
+	extra("%s @ %p: %s = %p", info.dli_fname, info.dli_fbase, info.dli_sname, info.dli_saddr);
 
 	// Initialize globals
 	PID = getpid();
@@ -39,6 +39,6 @@ void library_startup(void *base_addr, void *userptr) {
 }
 
 void library_shutdown(void *userptr) {
-	debug("%s(%p)", __func__, userptr);
+	extra("%s(%p)", __func__, userptr);
 	log_shutdown();
 }

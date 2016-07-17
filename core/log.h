@@ -57,6 +57,7 @@ void log_unregister_backend(backend_callback_t *callback, void *userptr);
 
 void log_shutdown(void);
 void log_reset(bool with_checkpoints);
+void log_set_threshold(LOG_LEVEL threshold);
 
 /* DEPRECATED
 void log_init(const char* filename);

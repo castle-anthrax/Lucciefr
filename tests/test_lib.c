@@ -39,6 +39,7 @@ void test_lib(void) {
 	luaL_openlibs(LUA);
 	luaopen_symbols(LUA);
 	luautils_dofile(LUA, "core/banner.lua", true);
+	luautils_require(LUA, "foobar");
 	lua_close(LUA);
 
 	Sleep(500);

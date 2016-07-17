@@ -18,7 +18,7 @@ static unsigned int win_get_pagesize(void) {
 
 void library_startup(void *base_addr, void *userptr) {
 	log_stdio("stdout");
-	debug("%s(%p,%p)", __func__, base_addr, userptr);
+	extra("%s(%p,%p)", __func__, base_addr, userptr);
 
 	// Initialize globals
 	PID = GetCurrentProcessId();
@@ -38,7 +38,7 @@ void library_startup(void *base_addr, void *userptr) {
 }
 
 void library_shutdown(void *userptr) {
-	debug("%s(%p)", __func__, userptr);
+	extra("%s(%p)", __func__, userptr);
 	log_shutdown();
 }
 
@@ -52,10 +52,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
 	switch (dwReason) {
 	case DLL_PROCESS_ATTACH:
 		library_startup(hModule, lpReserved);
-		debug("DLL_PROCESS_ATTACH(%p,%u,%p)", hModule, dwReason, lpReserved);
+		extra("DLL_PROCESS_ATTACH(%p,%u,%p)", hModule, dwReason, lpReserved);
 		break;
 	case DLL_PROCESS_DETACH:
-		debug("DLL_PROCESS_DETACH(%p,%u,%p)", hModule, dwReason, lpReserved);
+		extra("DLL_PROCESS_DETACH(%p,%u,%p)", hModule, dwReason, lpReserved);
 		library_shutdown(lpReserved);
 		break;
 	}

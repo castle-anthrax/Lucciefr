@@ -56,6 +56,14 @@ static uint32_t indent_level = 0; // current indentation (level)
 static checkpoint_entry_t *checkpoints = NULL; // hashmap tracing checkpoints
 static uint32_t serial = 0; // sequential message number
 
+/* logging threshold.
+Any log message with a LOG_LEVEL below this value will **not** get sent at all.
+
+The default level is LOG_LEVEL_INFO, or LOG_LEVEL_EXTRADEBUG (= all messages)
+in case of DEBUG builds. Use log_set_threshold() to adjust as needed.
+*/
+static LOG_LEVEL global_threshold = DEBUG ? LOG_LEVEL_EXTRADEBUG : LOG_LEVEL_INFO;
+
 // helper function that increments (and returns) a checkpoint's pass count
 static uint32_t checkpoint_pass_count(const char *checkpoint_id) {
 	checkpoint_entry_t *entry;
@@ -167,19 +175,13 @@ void log_reset(bool with_checkpoints) {
 	// TODO: reset `serial`?
 }
 
-/* DEPRECATED (use logstdio instead now)
-void log_stream(FILE *stream, const char *module, const char *fmt, ...) {
-	fputs(module, stream);
-	fputs(": ", stream);
-
-	va_list ap;
-	va_start(ap, fmt);
-	vfprintf(stream, fmt, ap);
-	va_end(ap);
-
-	fflush(stream);
-}
+/** Adjust the (global) logging threshold.
+Any message will a LOG_LEVEL below `threshold` will get suppressed.
 */
+// (See global_threshold above)
+void log_set_threshold(LOG_LEVEL threshold) {
+	global_threshold = threshold;
+}
 
 /* Die Aufteilung der Objekte sollte sich am tatsächlichen stream-Protokoll
  * von MessagePack orientieren; und zwar so, dass einzelne log messages ohne
@@ -297,6 +299,8 @@ You can pass `len < 0`, to use `strlen(msg)` instead.
 void attach_log_level(msgpack_object *attachment, LOG_LEVEL level,
 		const char *origin, const char *msg, int len)
 {
+	if (level < global_threshold) return;
+
 	// cached process ID (based on the assumption that it won't change)
 	static pid_t PID = 0;
 	if (!PID) PID = getpid();
