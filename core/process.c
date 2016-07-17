@@ -3,5 +3,5 @@
 #if _WINDOWS
 	#include "win/process.c"
 #else
-	#include "lin/process.c"
+	#include "linux/process.c"
 #endif
