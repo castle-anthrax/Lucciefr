@@ -27,7 +27,29 @@ LUA_CFUNC(get_processes_C) {
 	return 1;
 }
 
+LUA_CFUNC(get_process_name_C) {
+	if (!lua_isnumber(L, -1)) { 
+		return 0;
+	}
+	DWORD pid = lua_tonumber(L, -1);
+	HANDLE Handle = OpenProcess(
+        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+        FALSE,
+				pid);
+  if (Handle) {
+		TCHAR Buffer[MAX_PATH];
+		if (GetModuleFileNameEx(Handle, 0, Buffer, MAX_PATH)) {
+			lua_pushstring(L, Buffer);
+		} else {
+			lua_pushnil(L);
+		}
+		CloseHandle(Handle);
+  }
+	return 1;
+}
+
 LUA_CFUNC(luaopen_process) {
 	LREG(L, get_processes_C);
+	LREG(L, get_process_name_C);
 	return 0;
 }
