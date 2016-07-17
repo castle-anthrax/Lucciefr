@@ -9,7 +9,7 @@ include Makefile.inc
 
 # misc
 .PHONY: commit-id prepare clean mrproper docs doxygen
-.PHONY: main
+.PHONY: core main
 
 # output directories (out-of-tree build)
 OBJ = obj/
@@ -34,6 +34,7 @@ CORE = $(LIB)core.a
 INCL += -Iinclude -Icore
 $(CORE): prepare $(CORE_O)
 	@$(AR) r $@ $(CORE_O)
+core: $(CORE)
 
 # LuaJIT
 LUA_DIR = luajit/src
