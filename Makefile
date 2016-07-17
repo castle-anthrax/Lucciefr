@@ -11,6 +11,11 @@ include Makefile.inc
 .PHONY: commit-id prepare clean mrproper docs doxygen
 .PHONY: core main
 
+# default target(s): build "main" (dynamic library)
+default: main
+# target for "make all"
+all: clean main check
+
 # output directories (out-of-tree build)
 OBJ = obj/
 LIB = lib/
@@ -23,7 +28,7 @@ CORE_LUA_O := $(addprefix $(OBJ), $(notdir $(CORE_LUA:.lua=.core.lua.o)))
 
 # we use a small Lua utility that "wraps" .lua scripts into binary resources
 # (use @ to suppress command output, as objwrap.lua will echo a 'short' version of it)
-BINWRAP=@$(LUA_DIR)/luajit objwrap.lua "$(OCPY) $(OFLAGS)"
+BINWRAP=@$(LUA_DIR)/luajit$(EXE) objwrap.lua "$(OCPY) $(OFLAGS)"
 
 # ---------------------------------------------------------------------------
 # libs
@@ -41,7 +46,7 @@ LUA_DIR = luajit/src
 INCL += -I$(LUA_DIR)
 LUA = $(LUA_DIR)/libluajit.a
 $(LUA):
-	make -C $(LUA_DIR) CC="$(CC) -m$(BITS)"
+	make -j$(shell nproc) -C $(LUA_DIR) CC="$(CC) -m$(BITS)"
 luajit: $(LUA)
 
 # MessagePack
