@@ -17,7 +17,7 @@ int agent_initialize() {
 	LIBOPEN(lua_state, luaopen_process, 0);
 	luautils_dofile(lua_state, "core/process.lua", true);
 	luautils_getfunction(lua_state, "process", "getProcesses", true);
-	lua_call(lua_state, 0, 0);
+	lua_call(lua_state, 0, 1);
 	// end
 	lua_close(lua_state);
 	return 0;
