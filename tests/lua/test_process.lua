@@ -9,3 +9,10 @@ function TestProcess:testGetPids()
 	lu.assertIsTable(pids)
 	assert(#pids > 0)
 end
+
+function TestProcess:testProcesses()
+	local procs = process.getProcesses()
+	lu.assertIsTable(procs)
+	-- make sure table is not empty (can't use #procs, as it's NOT an array)
+	lu.assertNotNil(next(procs))
+end

@@ -1,10 +1,12 @@
 module("process", package.seeall)
 
 function getProcesses()
-	pids = process_get_pids_C()
-	processes = {}
-	for k,v in pairs(pids) do
-		processes[v] = process_get_module_name_C(v)
+	local processes, pids = {}, process_get_pids_C()
+	for k, v in ipairs(pids) do
+		local filename, err = process_get_module_name_C(v)
+		filename = filename or ("ERROR: " .. err) -- DEBUG only
+		print(v .. " = " .. filename)
+		processes[v] = filename
 	end
 	return processes
 end
