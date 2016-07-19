@@ -4,6 +4,8 @@
 
 #include "lfs.h"
 #include "luautils.h"
+#include "process.h"
+#include "symbols.h"
 
 #if _WINDOWS
 	#include <windows.h>
@@ -32,4 +34,25 @@ void test_lua(void) {
 	lua_pop(L, 1);
 
 	lua_close(L);
+}
+
+int run_unit_tests(void) {
+	lua_State *L = luaL_newstate();
+	luaL_openlibs(L);
+	luaopen_symbols(L);
+
+	// initialize extra modules we want/need for the tests
+	luaopen_process(L);
+
+	int failures;
+	if (luautils_dofile(L, "lua/unit_tests.lua", false) == 0)
+		failures = luaL_checkint(L, -1);
+	else {
+		// Lua error while executing "dofile"
+		error("ERROR running unit tests: %s", lua_tostring(L, -1));
+		failures = 1;
+	}
+
+	lua_close(L);
+	return failures;
 }

@@ -49,6 +49,7 @@ int main() {
 	// subsequently created Lua states should resolve scripts properly - after
 	// you do a luaopen_symbols(L);
 	test_lua();
+	int failures = run_unit_tests();
 
 	Sleep(500);
 	// release/unload the dynamic library
@@ -56,5 +57,7 @@ int main() {
 
 	log_shutdown();
 	printf("Done.\n");
-	return 0;
+	if (failures)
+		printf("%d test(s) FAILED\n", failures);
+	return failures;
 }
