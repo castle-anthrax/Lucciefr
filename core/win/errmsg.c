@@ -66,7 +66,7 @@ char *win_error(DWORD code, const UINT codepage, bool decorate) {
 	char *msg = ErrorMessage(code, true, codepage);
 	if (msg) {
 		if (decorate) {
-			char *result = formatmsg("Windows error %u (%s)", code, msg);
+			char *result = formatmsg("%s (Windows error %u)", msg, code);
 			free(msg);
 			return result;
 		}

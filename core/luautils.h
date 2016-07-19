@@ -18,6 +18,14 @@
 #define LUAUTILS_KV_HEADER_ONLY
 #include "luautils_kv.inc"
 
+#if _WINDOWS
+	#include <windows.h>
+	#define GET_LAST_ERROR	GetLastError()
+#else
+	#include <errno.h>
+	#define GET_LAST_ERROR	errno
+#endif
+
 // native/'natural' CPU register type
 // TODO: I moved these here for luautils_get(), but they probably belong into another .h?
 #if BITS == 32
@@ -106,6 +114,13 @@ void luautils_table_merge(lua_State *L, int from, int to, int dest); // merge as
 
 int luautils_xpack(lua_State *L, int from, int to); // table "pack", [x]unpack counterpart
 int luautils_xunpack(lua_State *L, int table, int from, int to); // table unpack, considers t[0]
+
+// helper function to report (system) errors
+int luautils_push_syserrorno(lua_State *L, int err, const char *fmt, ...);
+
+// push the last system error (message)
+#define luautils_push_syserror(L, ...) \
+	luautils_push_syserrorno(L, GET_LAST_ERROR, __VA_ARGS__)
 
 // an extended version of lua_pushfstring (with full vsnprintf capabilities)
 const char *luautils_pushfstring(lua_State *L, const char *fmt, ...);

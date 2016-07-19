@@ -10,6 +10,7 @@
 #include "strutils.h"
 #include "symbols.h"
 #include "utils.h"
+#include "util_win.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -773,6 +774,44 @@ int luautils_xunpack(lua_State *L, int table, int from, int to) {
 	return count;
 }
 
+
+// helper function to report (system) errors
+//
+// Push error message for the given error number to the Lua stack.
+// If (fmt != NULL) the function will format a printf-style message prefix,
+// that gets inserted (followed by ": ") before the actual error string.
+int luautils_push_syserrorno(lua_State *L, int err, const char *fmt, ...) {
+	char *prefix = NULL;
+	int prefix_len;
+	if (fmt) {
+		va_list ap;
+		va_start(ap, fmt);
+		prefix_len = vformatmsg_len(&prefix, fmt, ap);
+		va_end(ap);
+	}
+	luaL_Buffer b;
+	luaL_buffinit(L, &b);
+	if (prefix) {
+		luaL_addlstring(&b, prefix, prefix_len);
+		luaL_addliteral(&b, ": ");
+		free(prefix);
+	}
+#if _WINDOWS
+	char *msg = win_error(err, CP_OEMCP, DEBUG ? true : false);
+	if (msg)
+		luaL_addstring(&b, msg);
+	else
+		luaL_addliteral(&b, "ERROR retrieving message");
+	free(msg);
+#else
+	luaL_addstring(&b, strerror(err));
+	#if DEBUG
+	luaL_addfmt(&b, " (errno=%d)", err);
+	#endif
+#endif
+	luaL_pushresult(&b);
+	return 1;
+}
 
 // The lua_pushfstring() function is somewhat limited in its abilities,
 // see http://www.lua.org/manual/5.1/manual.html#lua_pushfstring
