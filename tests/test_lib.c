@@ -18,7 +18,7 @@
 	#include "win/test_lib.c"
 #endif
 
-void test_lib(void) {
+void lib_load(void) {
 	char libname[32];
 #if _LINUX
 	snprintf(libname, sizeof(libname), "../main/lucciefr-lin%u.so", BITS);
@@ -29,19 +29,27 @@ void test_lib(void) {
 	SetDllDirectory("..\\main\\");
 #endif
 	debug("libname = %s", libname);
-	void *handle = test_lib_load(libname); // load library
-	info("Dynamic library handle = %p", handle);
-	assert(handle != NULL);
 
-	// test Lua with embedded resources (customized symbol loader)
-	lcfr_globals.libhandle = handle;
+	lcfr_globals.libhandle = test_lib_load(libname); // load library
+	info("DLL path = %s", lcfr_globals.dllpath);
+	info("Dynamic library handle = %p", lcfr_globals.libhandle);
+	assert(lcfr_globals.libhandle != NULL);
+}
+
+void lib_test_symbol(void) {
+	// test Lua with embedded resource (via customized symbol loader)
 	LUA = luaL_newstate();
 	luaL_openlibs(LUA);
 	luaopen_symbols(LUA);
-	luautils_dofile(LUA, "core/banner.lua", true);
-	luautils_require(LUA, "foobar");
-	lua_close(LUA);
 
-	Sleep(500);
-	test_lib_unload(handle); // release/free library
+	luautils_dofile(LUA, "core/banner.lua", true);
+	// a test that is supposed to FAIL, verifies symbol loader error message
+	luautils_require(LUA, "foobar");
+
+	lua_close(LUA);
+	LUA = NULL; // (make sure the closed Lua state is no longer usable)
+}
+
+void lib_unload(void) {
+	test_lib_unload(lcfr_globals.libhandle); // release/free library
 }

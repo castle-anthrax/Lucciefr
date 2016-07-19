@@ -159,7 +159,7 @@ const char *strip_pwd(const char *pathname) {
 // been tested for MinGW. Also: have a look at objwrap.lua and its comments.
 char *getBinarySymbol(const char *path, size_t *len, char *buffer, size_t size) {
 	if (!len) {
-		error("getBinarySymbol(): you must pass a 'len' pointer!");
+		error("%s(): you must pass a 'len' pointer!", __func__);
 		return NULL;
 	}
 	*len = 0;
@@ -185,7 +185,7 @@ char *getBinarySymbol(const char *path, size_t *len, char *buffer, size_t size) 
 	// append "binary" to the pattern, and allow partial matching later (ignore path)
 	//strcat(pattern, "_binary_");
 #endif
-	extra("%s() path:'%s', pattern:'%s'", __func__, path, pattern);
+	extra("%s('%s') pattern:'%s'", __func__, path, pattern);
 
 	char temp[PATH_MAX + 32];
 	snprintf(temp, sizeof(temp), "%s_binary_obj_data_end", pattern);
@@ -306,6 +306,7 @@ LUA_CFUNC(symbol_dofile_C) {
 		char *msg = formatmsg("%s: executing dofile('%s') from %s",
 			__func__, strip_pwd(filename), strip_pwd(caller));
 		//fire_C(L, "DEBUG_LOADERS", 0, msg); // TODO: FIX ME!
+		extra(msg);
 		free(msg);
 		free(caller);
 #endif

@@ -512,6 +512,7 @@ int luautils_dofile(lua_State *L, const char *filename, bool stacktrace) {
 	lua_pushstring(L, get_dll_dir());
 	lua_pushstring(L, filename);
 	lua_concat(L, 2); // concat/prefix filename with PWD
+	//extra("%s(%s)", __func__, lua_tostring(L, -1)); // show resulting filename
 
 	int status = lua_pcall(L, 1, LUA_MULTRET, error_handler);
 	if (stacktrace) lua_remove(L, error_handler);

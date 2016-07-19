@@ -23,9 +23,36 @@ int main() {
 	test_win_utils();
 #endif
 
+	/* For the Lua tests we want to make sure that resolving symbols (e.g.
+	 * 'compiled-in' scripts) works. Using dlsym() on a static executable
+	 * under Linux creates its own problems, so we take a different approach
+	 * here: fake the presence of the "main" library by dynamically loading it
+	 * and enforce a corresponding `lcfr_globals.libhandle`.
+	 */
+	lib_load();
+#if _LINUX
+	/*
+	 * Travis CI seems to compile the sandbox executable in a way that *shares*
+	 * the lcfr_globals struct with the ("main") dynamic library. This leads
+	 * to problems using dofile(), as the DLL prefix (= main dir) will get
+	 * prepended to relative paths, causing the file_exists() test to fail.
+	 *
+	 * Work around this by forcing lcfr_globals.dllpath to the executable path.
+	 */
+	memset(lcfr_globals.dllpath, 0, sizeof(lcfr_globals.dllpath));
+	readlink("/proc/self/exe", lcfr_globals.dllpath, sizeof(lcfr_globals.dllpath));
+	info("DLL path override = %s", lcfr_globals.dllpath);
+#endif
+
+	lib_test_symbol();
+
+	// subsequently created Lua states should resolve scripts properly - after
+	// you do a luaopen_symbols(L);
 	test_lua();
 
-	test_lib();
+	Sleep(500);
+	// release/unload the dynamic library
+	lib_unload();
 
 	log_shutdown();
 	printf("Done.\n");
