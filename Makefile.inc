@@ -82,3 +82,7 @@ ifeq ($(BITS), 32)
 else
 	OFLAGS += -O $(BINFMT_64)
 endif
+
+ifeq ($(QUIET),1)
+	TO_NULL = >/dev/null
+endif

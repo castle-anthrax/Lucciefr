@@ -13,5 +13,5 @@ build:
   shell: mingw$$BITS
   commands:
     - make commit-id
-    - make main
+    - make main QUIET=1
     - make check

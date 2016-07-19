@@ -49,14 +49,16 @@ LUA_DIR = luajit/src
 INCL += -I$(LUA_DIR)
 LUA = $(LUA_DIR)/libluajit.a
 $(LUA):
-	make -j$(shell nproc) -C $(LUA_DIR) CC="$(CC) -m$(BITS)"
+	@echo -e "\nBuilding LuaJIT..."
+	make -j$(shell nproc) -C $(LUA_DIR) CC="$(CC) -m$(BITS)" $(TO_NULL)
 luajit: $(LUA)
 
 # MessagePack
 MSGPACK := $(LIB)msgpack.a
 INCL += -Imsgpack-c/include
 $(MSGPACK): prepare
-	make -C msgpack-c/ -f Makefile.lcfr LIB=../$(MSGPACK)
+	@echo -e "\nBuilding msgpack-c..."
+	make -C msgpack-c/ -f Makefile.lcfr LIB=../$(MSGPACK) $(TO_NULL)
 
 # agent library target
 AGENT_LIBS := $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)

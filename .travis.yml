@@ -4,6 +4,8 @@ sudo: false
 language: c
 
 env:
+  global:
+    - QUIET=1
   matrix:
     - BITS=32 DEBUG=0
     - BITS=32 DEBUG=1
