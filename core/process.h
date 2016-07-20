@@ -7,6 +7,7 @@
 
 #include "lua.h"
 #include "luahelpers.h"
+#include "luautils.h"
 
 #if _WINDOWS
 	#include <windows.h>
