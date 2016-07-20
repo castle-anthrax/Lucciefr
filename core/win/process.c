@@ -72,39 +72,41 @@ bool resume_process(DWORD pid) {
  *
  * Note: We also try to hide the resulting thread from debugging.
  */
-bool execute_remote_thread(HANDLE proc, void *entry_point, void *param,
-		DWORD timeout, PDWORD exit_code) {
-	if (!proc) {
+bool execute_remote_thread(HANDLE hProcess, void *entry_point, void *param,
+		DWORD timeout, PDWORD exit_code)
+{
+	if (!hProcess) {
 		error("%s: invalid (NULL) process handle", __func__);
 		return false;
 	}
-
-	HANDLE thread = CreateRemoteThread(proc, NULL, 0,
+	HANDLE thread = CreateRemoteThread(hProcess, NULL, 0,
 						(LPTHREAD_START_ROUTINE)entry_point, param,
 						CREATE_SUSPENDED, NULL);
-	if (thread) {
-		//XXX we need to think about a correct and stable solution here 
-		//hide_thread(thread); 
-		ResumeThread(thread);
-
-		bool result = false;
-		WaitForSingleObject(thread, timeout); // give thread some time to complete
-		if (GetExitCodeThread(thread, exit_code)) {
-			if (*exit_code == STILL_ACTIVE)
-				error("%s: exit code STILL_ACTIVE, "
-					"thread did not finish within timeout", __func__);
-			else
-				result = true; // (successful completion within timeout)
-		}
-		else error("%s: GetExitCodeThread() FAILED with error code %u",
-				__func__, GetLastError());
-
-		CloseHandle(thread);
-		return result;
+	if (!thread) {
+		error("%s: CreateRemoteThread() FAILED with error code %u",
+			  __func__, GetLastError());
+		return false;
 	}
-	error("%s: CreateRemoteThread() FAILED with error code %u",
-			__func__, GetLastError());
-	return false;
+
+	//XXX we need to think about a correct and stable solution here
+	//hide_thread(thread);
+	ResumeThread(thread);
+
+	bool result = false;
+	WaitForSingleObject(thread, timeout); // give thread some time to complete
+	if (GetExitCodeThread(thread, exit_code)) {
+		if (*exit_code == STILL_ACTIVE)
+			error("%s: exit code STILL_ACTIVE, "
+				  "thread did not finish within timeout", __func__);
+		else
+			result = true; // (successful completion within timeout)
+	}
+	else
+		error("%s: GetExitCodeThread() FAILED with error code %u",
+			  __func__, GetLastError());
+
+	CloseHandle(thread);
+	return result;
 }
 
 /**
@@ -146,6 +148,13 @@ HMODULE inject_crt(DWORD pid, const char *dll_path) {
 				if (execute_remote_thread(proc, remote_load, remote_buffer,
 						3000, &exit_code)) {
 					if (exit_code)
+						/* TODO: This needs improvement for x64! The problem we
+						 * face here is that LoadLibrary returns a module handle
+						 * (= pointer) value, but GetExitCodeThread() is limited
+						 * a to DWORD = 32 bits.
+						 * (Might still get away with this, as long as we just
+						 * test the result for a non-zero value?)
+						 */
 						// a non-zero result of LoadLibrary means success:
 						remote_base = (HMODULE)(exit_code);
 					else
@@ -178,12 +187,12 @@ static DWORD get_process_file(HANDLE hProcess, char *buffer, DWORD size) {
 	 * Try to retrieve (and cache) the function pointer.
 	 */
 	static QUERYFULLPROCESSIMAGENAME pQueryFullProcessImageName;
-	static BOOL cached = FALSE;
+	static bool cached = false;
 	if (!cached) {
 		pQueryFullProcessImageName
 			= (QUERYFULLPROCESSIMAGENAME)
 			  GetProcAddress(kernel32(), "QueryFullProcessImageNameA");
-		cached = TRUE;
+		cached = true;
 	}
 
 	DWORD result;
@@ -241,22 +250,42 @@ char *get_pid_exe(pid_t pid, char *buffer, size_t size) {
 //#### lua bindings ######################
 
 LUA_CFUNC(process_get_pids_C) {
-	DWORD aProcesses[1024], cbNeeded, cProcesses;
-	unsigned i;
-	if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) {
-		return 0;
-	}
-	cProcesses = cbNeeded / sizeof(DWORD);
-	lua_newtable(L);
-	for(i = 0; i < cProcesses; i++) {
-		if(aProcesses[i] != 0) {
-			lua_pushnumber(L, i);
-			lua_pushnumber(L, aProcesses[i]);
-			lua_rawset(L, -3);
+	PDWORD pidlist = NULL;
+	DWORD cbNeeded;
+	DWORD count = sizeof(DWORD) * 256; // initial buffer (= max. pid count)
+	while (true) {
+		pidlist = realloc(pidlist, count);
+		if (!pidlist) {
+			lua_pushnil(L);
+			luautils_push_syserror(L, "%s realloc() FAILED", __func__);
+			return 2;
 		}
+		if (!EnumProcesses(pidlist, count, &cbNeeded)) {
+			free(pidlist);
+			lua_pushnil(L);
+			luautils_push_syserror(L, "%s EnumProcesses() FAILED", __func__);
+			return 2;
+		}
+		if (cbNeeded < count)
+			break;
+		/* buffer may have filled completely, retry with a larger one */
+		count *= 2;
 	}
-
-	return 1;
+	cbNeeded /= sizeof(DWORD); // the actual pid count
+	//debug("%u PIDs listed", cbNeeded);
+	lua_createtable(L, cbNeeded, 0); // Lua array with pre-allocated capacity
+	count = 0; // element count in Lua table
+	PDWORD pid = pidlist;
+	for (; cbNeeded-- > 0; pid++)
+		if (*pid != 0 && *pid != 4) {
+			// PID == 0 and PID == 4 are the system idle process and system
+			// process (Windows kernel), respectively. Skip those (don't list).
+			lua_pushinteger(L, *pid);
+			lua_rawseti(L, -2, ++count);
+		}
+	free(pidlist);
+	//debug("%u PIDs in Lua table", count);
+	return 1; // returns Lua table
 }
 
 LUA_CFUNC(process_get_module_name_C) {
