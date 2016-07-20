@@ -19,6 +19,10 @@ int main() {
 	test_core_time();
 	test_core_log();
 
+#if _WINDOWS
+	test_win_utils();
+#endif
+
 	test_lua();
 
 	test_lib();

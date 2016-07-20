@@ -3,8 +3,11 @@
  * routines to access (and cache) frequently used Windows DLL handles
  */
 
-#include "win/winlibs.h"
+#include "winlibs.h"
+
+#include "log.h"
 #include "macro.h"
+
 
 static HMODULE NTDLL	= NULL;
 static HMODULE KERNEL32	= NULL;
@@ -13,7 +16,7 @@ static HMODULE SHELL32	= NULL;
 // low-level function to retrieve and cache a module handle.
 // If the handle was requested before, it's returned from the cache
 // memory location (modptr); otherwise this calls GetModuleHandleA().
-void gethandle(HMODULE *modptr, const char *name) {
+static inline void gethandle(HMODULE *modptr, const char *name) {
 	if (*modptr == NULL) *modptr = GetModuleHandleA(name);
 }
 
@@ -36,29 +39,35 @@ HMODULE loadlib(HMODULE *modptr, const char *name) {
 	return *modptr;
 }
 
-HMODULE ntdll(void) {
+inline HMODULE ntdll(void) {
 	return getlib(&NTDLL, "ntdll");
 }
 
-HMODULE kernel32(void) {
+inline HMODULE kernel32(void) {
 	return loadlib(&KERNEL32, "kernel32");
 }
 
-HMODULE shell32(void) {
+inline HMODULE shell32(void) {
 	return loadlib(&SHELL32, "shell32");
 }
 
 // DLL file names for the MSVC runtime library, in order of precedence
 static const char *modulenames[] = {
+	"ucrtbase",
+	"msvcr120",
+	"msvcr110",
 	"msvcr100",
+	"msvcr90",
+	"msvcr80",
 	"msvcrt"
 };
 
-// this function attempts to aquire a module handle to the MSVC runtime library
-// by trying the various filenames above.
+// This function attempts to aquire a module handle to the MSVC runtime library
+// by trying the various filenames above. (It will _not_ attempt to load those
+// modules if they aren't already present!)
 // returns HMODULE (or NULL, if unsuccessful)
 // if set, the optional "modulename" pointer will receive the module name
-HMODULE msvcrt(const char **modulename) {
+inline HMODULE msvcrt(const char* *modulename) {
 	HMODULE result;
 	if (modulename) *modulename = NULL;
 

@@ -2,14 +2,15 @@
  * process.c
  */
 
-#include <windows.h>
-#include <psapi.h>
-
-#include "util_win.h"
 #include "process.h"
+
 #include "bool.h"
-#include "log.h"
 #include "lauxlib.h"
+#include "log.h"
+#include "util_win.h"
+
+#include <psapi.h>
+#include <windows.h>
 
 
 /**

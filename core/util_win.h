@@ -7,11 +7,6 @@
 #include "bool.h"
 #include <windows.h>
 
-#if _WINDOWS
-	#include "win/winlibs.h"
-#endif
-
-
 #define DEFAULT_CODEPAGE	CP_ACP  /* default: system ANSI code page */
 // Normally the error messages should be 'ANSI' too (CP_ACP), but we
 // might CP_OEMCP, as that's what the (Windows') console output expects.

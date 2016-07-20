@@ -80,3 +80,14 @@ void test_core_log(void) {
 	check("foobar");
 	leave("leave");
 }
+
+#if _WINDOWS
+#include "winlibs.h"
+
+void test_win_utils(void) {
+	debug("kernel32 = %p", kernel32());
+	debug("ntdll    = %p", ntdll());
+	debug("shell32  = %p", shell32());
+	debug("msvcrt   = %p", msvcrt(NULL));
+}
+#endif
