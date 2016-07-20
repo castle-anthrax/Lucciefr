@@ -4,7 +4,6 @@
 
 #include "lfs.h"
 #include "luautils.h"
-#include "process.h"
 #include "symbols.h"
 
 #if _WINDOWS

@@ -166,6 +166,11 @@ HMODULE inject_crt(DWORD pid, const char *dll_path) {
 	return remote_base;
 }
 
+char *get_pid_exe(pid_t pid, char *buffer, size_t size) {
+	// placeholder / DUMMY function for now
+	return NULL;
+}
+
 //#### lua bindings ######################
 
 LUA_CFUNC(process_get_pids_C) {

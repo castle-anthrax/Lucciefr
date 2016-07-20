@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "logstdio.h"
+#include "process.h"
 
 #include "test_core.c"
 #include "test_lua.c"
@@ -39,8 +40,7 @@ int main() {
 	 *
 	 * Work around this by forcing lcfr_globals.dllpath to the executable path.
 	 */
-	memset(lcfr_globals.dllpath, 0, sizeof(lcfr_globals.dllpath));
-	readlink("/proc/self/exe", lcfr_globals.dllpath, sizeof(lcfr_globals.dllpath));
+	get_pid_exe(0, lcfr_globals.dllpath, sizeof(lcfr_globals.dllpath));
 	info("DLL path override = %s", lcfr_globals.dllpath);
 #endif
 
