@@ -8,6 +8,7 @@
 #include "lauxlib.h"
 #include "log.h"
 #include "util_win.h"
+#include "winlibs.h"
 
 #include <psapi.h>
 #include <windows.h>
@@ -166,9 +167,75 @@ HMODULE inject_crt(DWORD pid, const char *dll_path) {
 	return remote_base;
 }
 
+// retrieve full executable ("image") filename for a process handle to a given
+// buffer, returns character count
+static DWORD get_process_file(HANDLE hProcess, char *buffer, DWORD size) {
+	// function pointer type declaration for QueryFullProcessImageName
+	typedef BOOL (WINAPI *QUERYFULLPROCESSIMAGENAME)(HANDLE, DWORD, LPTSTR, PDWORD);
+
+	/* QueryFullProcessImageName was introduced with Vista,
+	 * so it might not be present on older Windows versions.
+	 * Try to retrieve (and cache) the function pointer.
+	 */
+	static QUERYFULLPROCESSIMAGENAME pQueryFullProcessImageName;
+	static BOOL cached = FALSE;
+	if (!cached) {
+		pQueryFullProcessImageName
+			= (QUERYFULLPROCESSIMAGENAME)
+			  GetProcAddress(kernel32(), "QueryFullProcessImageNameA");
+		cached = TRUE;
+	}
+
+	DWORD result;
+	if (pQueryFullProcessImageName) {
+		result = size;
+		if (!pQueryFullProcessImageName(hProcess, 0, buffer, &result))
+			return 0;
+	} else
+		// function unavailable, so fall back to GetModuleFileNameEx
+		result = GetModuleFileNameExA(hProcess, NULL, buffer, size);
+	return result;
+}
+
+static char *get_handle_exe(HANDLE hProcess, char *buffer, size_t size) {
+	DWORD len;
+	char *result = buffer;
+
+	if (result) {
+		len = get_process_file(hProcess, result, size);
+		if (len == 0) return NULL;
+	} else {
+		// use dynamically sized buffer
+		size = 128;
+		while (true) {
+			result = realloc(result, size);
+			if (!result)
+				return NULL;
+			len = get_process_file(hProcess, result, size);
+			if (len == 0) {
+				free(result);
+				return NULL;
+			}
+			if (len < size)
+				break;
+			/* possibly truncated file name, double buffer size and retry */
+			size *= 2;
+		}
+		// Note: YOU must call free() on the return value later!
+	}
+	return result;
+}
+
 char *get_pid_exe(pid_t pid, char *buffer, size_t size) {
-	// placeholder / DUMMY function for now
-	return NULL;
+	if (!pid) pid = getpid();
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+								  FALSE, pid);
+	char *result = NULL;
+	if (hProcess) {
+		result = get_handle_exe(hProcess, buffer, size);
+		CloseHandle(hProcess);
+	}
+	return result;
 }
 
 //#### lua bindings ######################
@@ -193,20 +260,15 @@ LUA_CFUNC(process_get_pids_C) {
 }
 
 LUA_CFUNC(process_get_module_name_C) {
-	DWORD pid = luaL_checkinteger(L, 1);
-	HANDLE Handle = OpenProcess(
-        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
-        FALSE,
-				pid);
-  if (Handle) {
-		TCHAR Buffer[MAX_PATH];
-		if (GetModuleFileNameEx(Handle, 0, Buffer, MAX_PATH)) {
-			lua_pushstring(L, Buffer);
-		} else {
-			lua_pushnil(L);
-		}
-		CloseHandle(Handle);
-  }
+	char buffer[MAX_PATH];
+	char *result = get_pid_exe(luaL_checkinteger(L, 1), buffer, sizeof(buffer));
+	if (!result) {
+		lua_pushnil(L);
+		luautils_push_syserror(L, "get_pid_exe()");
+		return 2;
+	}
+	lua_pushstring(L, result);
+	free(result);
 	return 1;
 }
 
