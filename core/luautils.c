@@ -20,10 +20,6 @@
 // TODO: FIX ME!
 #define FMTPTR	"%p"
 
-// Lua key -> value helpers (include actual implementation / function bodies)
-#undef LUAUTILS_KV_HEADER_ONLY
-#include "luautils_kv.inc"
-
 
 // Given (optional) module name and function name, push the corresponding
 // function to the Lua stack. Return value indicates success or failure,

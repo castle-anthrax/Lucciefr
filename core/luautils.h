@@ -15,7 +15,6 @@
 #include "luahelpers.h"
 
 // Lua table key->value helpers
-#define LUAUTILS_KV_HEADER_ONLY
 #include "luautils_kv.inc"
 
 #if _WINDOWS
