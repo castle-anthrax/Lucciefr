@@ -1,8 +1,6 @@
 /*
- * process.c
+ * processes.c
  */
-
-#include "process.h"
 
 #include "bool.h"
 #include "lauxlib.h"

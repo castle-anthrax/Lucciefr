@@ -1,4 +1,4 @@
-/// @file process.h
+/// @file processes.h
 
 #ifndef PROCESS_H
 #define PROCESS_H

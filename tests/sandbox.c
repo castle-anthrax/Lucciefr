@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "logstdio.h"
-#include "process.h"
+#include "processes.h"
 
 #include "test_core.c"
 #include "test_lua.c"

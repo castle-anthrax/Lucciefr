@@ -5,7 +5,7 @@
 
 #include "limits.h"
 #include "lua.h"
-#include "process.h" // pid_t
+#include "processes.h" // pid_t
 /*
 #include "config.h"
 #include "bool.h"

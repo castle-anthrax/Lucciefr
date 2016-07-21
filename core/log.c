@@ -36,7 +36,7 @@ error("foo = %s", "bar");
 #include "list.h"
 #include "macro.h"
 #include "mpkutils.h"
-#include "process.h"
+#include "processes.h"
 #include "strutils.h"
 #include "timing.h"
 #include "uthash.h"
