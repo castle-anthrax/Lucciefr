@@ -1,3 +1,4 @@
+#include <getopt.h>
 #include <stdio.h>
 
 #include "config.h"
@@ -7,8 +8,31 @@
 #include "test_core.c"
 #include "test_lua.c"
 #include "test_lib.c"
+#include "test_loop.c"
 
-int main() {
+int main(int argc, char **argv) {
+	static int loop_timeout = 0;
+
+	static const struct option long_options[] = {
+		{"interactive", no_argument, &loop_timeout, -1},
+		{"loop", optional_argument, NULL, 'l'},
+		{NULL, 0, NULL, 0},
+	};
+
+	/* process command line options */
+	int c;
+	do {
+		c = getopt_long_only(argc, argv, "", long_options, NULL);
+
+		if (c == 'l') { // "--loop" option
+			if (optarg)
+				loop_timeout = atoi(optarg);
+			else
+				loop_timeout = 5;
+			loop_timeout *= 1000; // time in milliseconds
+		}
+	} while (c != -1);
+
 	printf(PROJECT_NAME " sandbox " VERSION_STRING " %d-bit", BITS);
 #ifdef COMMIT_ID
 	printf(" @" COMMIT_ID);
@@ -51,7 +75,10 @@ int main() {
 	test_lua();
 	int failures = run_unit_tests();
 
-	Sleep(500);
+	if (loop_timeout)
+		test_loop(loop_timeout);
+
+	Sleep(100);
 	// release/unload the dynamic library
 	lib_unload();
 

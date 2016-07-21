@@ -10,7 +10,7 @@ include ../Makefile.inc
 SANDBOX := sandbox$(EXE)
 
 check: $(SANDBOX)
-	./$(SANDBOX)
+	./$(SANDBOX) --loop=10
 
 $(SANDBOX): sandbox.c $(wildcard test_*.c) $(XLIBS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(XLIBS) $(LD_LIBS)
