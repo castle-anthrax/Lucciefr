@@ -25,6 +25,8 @@ ifeq ($(ARCH),Linux)
 	DLL    := .so
 	# dynamic loading
 	LD_LIBS += -ldl
+	# POSIX threads
+	LD_LIBS += -lpthread
 
 else
 	ifeq ($(ARCH),Darwin) # MacOSX
@@ -33,6 +35,8 @@ else
 		DLL := .so
 		# dynamic loading
 		LD_LIBS += -ldl
+		# POSIX threads
+		LD_LIBS += -lpthread
 
 	else  # Windows, MinGW
 		WINDOWS := 1
