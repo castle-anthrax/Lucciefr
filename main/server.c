@@ -100,4 +100,5 @@ void stop_ipc_server(void) {
 	// wait for thread to finish, 3 seconds timeout
 	thread_wait(server_thread, 3000);
 	debug("%s() complete", __func__);
+	Sleep(50); // allow a small amount of time before logging shuts down
 }
