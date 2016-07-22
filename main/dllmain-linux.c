@@ -6,6 +6,7 @@ Linux implementation of library_startup() and library_shutdown()
 #include "logstdio.h"
 #include "log.h"
 //#include "utils.h"
+#include "server.h"
 
 #include <dlfcn.h>
 #include <unistd.h>
@@ -36,9 +37,11 @@ void library_startup(void *base_addr, void *userptr) {
 	debug("dllpath  = %s", lcfr_globals.dllpath);
 	//debug("dllpath  = %s", get_dll_path());
 	//debug("dlldir   = %s", get_dll_dir());
+	start_ipc_server();
 }
 
 void library_shutdown(void *userptr) {
 	extra("%s(%p)", __func__, userptr);
+	stop_ipc_server();
 	log_shutdown();
 }

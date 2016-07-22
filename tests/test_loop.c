@@ -35,7 +35,7 @@ static void ctrlc_handler(int signum) {
 	running = false;
 }
 
-#define TICKS_MS	500
+#define TICKS_MS	600 // 600ms are on purpose to be asynchronous with IPC server
 
 void test_loop(int timeout) {
 	signal(SIGINT, ctrlc_handler);

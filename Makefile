@@ -85,7 +85,7 @@ $(OBJ)%.o: agent/$(TARGET)/%.c
 # shared library target ("main" dll), e.g. lucciefr-win32.dll
 MAIN_LIBS := $(CORE) $(CORE_LUA_O) $(MSGPACK) $(LUA)
 MAIN := main/$(PREFIX_LONG)-$(TARGET)$(BITS)$(DLL)
-$(MAIN): main/dllmain.c $(MAIN_LIBS)
+$(MAIN): main/dllmain.c main/server.c $(MAIN_LIBS)
 	$(CC) $(CFLAGS) $(INCL) $(LDFLAGS) -shared -o $@ $^
 main: prepare $(MAIN_LIBS) $(MAIN)
 
