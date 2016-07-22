@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "config.h"
+#include "log.h"
 #include "logstdio.h"
 #include "processes.h"
 
@@ -39,6 +40,9 @@ int main(int argc, char **argv) {
 #endif
 	putchar('\n');
 	log_stdio("stdout");
+#if !DEBUG
+	log_set_threshold(LOG_LEVEL_DEBUG); // we want DEBUG messages for now
+#endif
 
 	test_core_bits();
 	test_core_time();
