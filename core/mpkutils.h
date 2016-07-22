@@ -30,4 +30,10 @@ void msgpack_object_from_lstring(msgpack_object *object, const char *str, size_t
 // write msgpack_object_str to a stream
 size_t msgpack_object_str_fwrite(msgpack_object_str str, FILE *stream);
 
+// length of an "ext" format message
+size_t msgpack_ext_bytecount(const uint8_t *data);
+
+// pack to "ext" format
+int sbuffer_pack_ext(msgpack_sbuffer *sbuffer, int8_t type, const void *data, size_t len);
+
 #endif // MPKUTILS_H
