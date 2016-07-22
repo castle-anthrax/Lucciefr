@@ -32,6 +32,12 @@ void test_lua(void) {
 	puts(lua_tostring(L, -1));
 	lua_pop(L, 1);
 
+	// Check if the new "package.loaded[module]" resolution works
+	luautils_require(L, "lua.easter");
+	luautils_dostring(L, "print(package.loaded['lua.easter'].egg)");
+	luautils_getfunction(L, "lua.easter", "egg", true);
+	lua_call(L, 0, 0);
+
 	lua_close(L);
 }
 

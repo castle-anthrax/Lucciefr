@@ -32,6 +32,18 @@ bool luautils_getfunction(lua_State *L, const char *module,
 
 	if (module) {
 		lua_getglobal(L, module);
+		if (lua_isnil(L, -1)) {
+			// Not found as global symbol - try harder.
+			// We'll now look up package.loaded[module] instead...
+			lua_pop(L, 1);
+			lua_getglobal(L, "package");
+			if (!lua_isnil(L, -1))
+				lua_getfield(L, -1, "loaded");
+			if (!lua_isnil(L, -1))
+				lua_getfield(L, -1, module);
+			if (!lua_isnil(L, -1))
+				extra("%s: using package.loaded['%s']", __func__, module);
+		}
 		if (!lua_istable(L, -1)) {
 			snprintf(err, sizeof(err), "%s() module '%s' not found",
 					__func__, module);
