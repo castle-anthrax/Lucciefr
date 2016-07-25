@@ -20,7 +20,7 @@ Copyright 2016 by the Lucciefr team
 2016-07-07 [BNO] initial version
 */
 
-//#include "utils.h"
+#include "utils.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -30,6 +30,21 @@ Copyright 2016 by the Lucciefr team
 #define DEFAULT_BUFFERSIZE	( 16*1024)
 #define MIN_RECV_CAPACITY	(  8*1024)	// minimum capacity we want for receive
 #define MAX_CHUNK_SIZE		(128*1024)	// max size for a single send() operation
+
+static inline void make_file_name(char *buffer, size_t size, const char *suffix)
+{
+	snprintf(buffer, size, "/tmp/.%s", suffix);
+}
+
+// On Linux, we can test for the presence of an IPC server (= socket local)
+// by simply checking if the corresponding file is present.
+bool ipc_server_detection(const pid_t pid) {
+    char suffix[32];
+    char filename[40];
+    ipc_server_mkname(suffix, sizeof(suffix), pid);
+    make_file_name(filename, sizeof(filename), suffix);
+    return file_exists(filename);
+}
 
 bool ipc_server_init(lcfr_ipc_server_t *ipc_server, const char *name_suffix) {
 	memset(ipc_server, 0, sizeof(lcfr_ipc_server_t)); // clear struct
@@ -44,7 +59,8 @@ bool ipc_server_init(lcfr_ipc_server_t *ipc_server, const char *name_suffix) {
 	}
 
 	struct sockaddr_un addr = { .sun_family = AF_UNIX };
-	snprintf(addr.sun_path, sizeof(addr.sun_path), "/tmp/.%s", name_suffix);
+	make_file_name(addr.sun_path, sizeof(addr.sun_path), name_suffix);
+	debug("socket name = %s", addr.sun_path);
 	unlink(addr.sun_path); // make sure the file doesn't exist
 	if (bind(ipc_server->socket, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
 		perror("bind() FAILED");

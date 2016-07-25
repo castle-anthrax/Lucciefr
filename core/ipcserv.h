@@ -63,7 +63,7 @@ void ipc_server_mkname(char *buffer, size_t size, const pid_t pid);
 /** Test a given process ID for the presence of an IPC server.
 We use this to decide whether a process already got "injected" or not.
 */
-void ipc_server_detection(const pid_t pid);
+bool ipc_server_detection(const pid_t pid);
 
 /// "constructor", prepare a lcfr_ipc_server before usage
 bool ipc_server_init(lcfr_ipc_server_t *ipc_server, const char *name_suffix);
