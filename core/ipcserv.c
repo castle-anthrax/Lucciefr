@@ -6,15 +6,10 @@
 #include "log.h"
 #include "utils.h"
 
-// forward declaration for internal processing of buffered receive
-static bool ipc_server_internal_onRead(lcfr_ipc_server_t *ipc_server);
-
-#if _LINUX
-	#include "linux/ipcserv.c"
-#endif
-#if _WINDOWS
-	#include "win/ipcserv.c"
-#endif
+void ipc_server_mkname(char *buffer, size_t size, const pid_t pid) {
+	// for now, ignore the pid (use 0 instead)
+	snprintf(buffer, size, "lcfr-%u", 0);
+}
 
 // (internal) callback function for IPC "serialization" with ipc_server_write()
 static void ipc_srvmsg_callback(msgpack_sbuffer *msg, void *userptr) {
@@ -80,3 +75,11 @@ static bool ipc_server_internal_onRead(lcfr_ipc_server_t *ipc_server) {
 	}
 	return false;
 }
+
+// include platform-specific implementations
+#if _LINUX
+	#include "linux/ipcserv.c"
+#endif
+#if _WINDOWS
+	#include "win/ipcserv.c"
+#endif

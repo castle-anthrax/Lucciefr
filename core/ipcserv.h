@@ -57,7 +57,7 @@ struct lcfr_ipc_server {
 	ringbuffer_t write_queue;	///< write queue (ring buffer logic)
 };
 
-/// create a suitable IPC name (suffix) from a given PID
+/// create suitable IPC name (suffix) from a given PID
 void ipc_server_mkname(char *buffer, size_t size, const pid_t pid);
 
 /** Test a given process ID for the presence of an IPC server.

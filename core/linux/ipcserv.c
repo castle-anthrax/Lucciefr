@@ -31,11 +31,6 @@ Copyright 2016 by the Lucciefr team
 #define MIN_RECV_CAPACITY	(  8*1024)	// minimum capacity we want for receive
 #define MAX_CHUNK_SIZE		(128*1024)	// max size for a single send() operation
 
-void ipc_server_mkname(char *buffer, size_t size, const pid_t pid) {
-	// for now, ignore the pid (use 0 instead)
-	snprintf(buffer, size, "lcfr-%u", 0);
-}
-
 bool ipc_server_init(lcfr_ipc_server_t *ipc_server, const char *name_suffix) {
 	memset(ipc_server, 0, sizeof(lcfr_ipc_server_t)); // clear struct
 	ipc_server->state = LCFR_IPCSRV_INVALID;
