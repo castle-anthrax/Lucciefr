@@ -12,11 +12,9 @@ static bool ipc_server_internal_onRead(lcfr_ipc_server_t *ipc_server);
 #if _LINUX
 	#include "linux/ipcserv.c"
 #endif
-/*
 #if _WINDOWS
 	#include "win/ipcserv.c"
 #endif
-*/
 
 // (internal) callback function for IPC "serialization" with ipc_server_write()
 static void ipc_srvmsg_callback(msgpack_sbuffer *msg, void *userptr) {
