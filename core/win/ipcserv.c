@@ -23,12 +23,22 @@ Copyright 2015-2016 by the Lucciefr team
 
 #include <windows.h>
 
-bool ipc_server_init(lcfr_ipc_server *ipc_server, const char *name) {
-	memset(ipc_server, 0, sizeof(lcfr_ipc_server)); // clear struct
+#define DEFAULT_BUFFERSIZE	(16*1024)	// default buffer size for unpacker
+
+static inline void make_pipe_name(char *buffer, size_t size, const char *suffix)
+{
+	snprintf(buffer, size, "\\\\.\\pipe\\%s", suffix);
+}
+
+bool ipc_server_init(lcfr_ipc_server_t *ipc_server, const char *name_suffix) {
+	memset(ipc_server, 0, sizeof(lcfr_ipc_server_t)); // clear struct
 	ipc_server->state = LCFR_IPCSRV_INVALID;
 
 	// create a new named pipe in message mode and with "overlapped" I/O
-	ipc_server->hPipe = CreateNamedPipeA(name,
+    char filename[64];
+    make_pipe_name(filename, sizeof(filename), name_suffix);
+	debug("pipe name = %s", filename);
+	ipc_server->hPipe = CreateNamedPipeA(filename,
 		PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE | FILE_FLAG_OVERLAPPED,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
 		1, // for now, we're limiting our pipe to a single instance (connection)
@@ -40,21 +50,25 @@ bool ipc_server_init(lcfr_ipc_server *ipc_server, const char *name) {
 
 	// Prepare overlapped I/O structure with event (manual reset, non-signalled)
 	ipc_server->oOverlap.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	// unpacker (and receive buffer)
+	ipc_server->unpacker = msgpack_unpacker_new(DEFAULT_BUFFERSIZE);
+	debug("unpacker capacity %zu", msgpack_unpacker_buffer_capacity(ipc_server->unpacker));
 	// set up (ring) buffer for writing
 	ringbuffer_init(&ipc_server->write_queue, DEFAULT_RINGBUFFER_SIZE, free);
+
 	return true;
 }
 
-void ipc_server_done(lcfr_ipc_server *ipc_server) {
+void ipc_server_done(lcfr_ipc_server_t *ipc_server) {
 	DisconnectNamedPipe(ipc_server->hPipe); // forced shutdown
 	CloseHandle(ipc_server->oOverlap.hEvent);
 	CloseHandle(ipc_server->hPipe);
 	// release / free up buffers
 	ringbuffer_done(&ipc_server->write_queue);
-	free(ipc_server->msgBuffer);
+	msgpack_unpacker_free(ipc_server->unpacker);
 }
 
-bool ipc_server_reconnect(lcfr_ipc_server *ipc_server) {
+bool ipc_server_reconnect(lcfr_ipc_server_t *ipc_server) {
 	if (ipc_server->state != LCFR_IPCSRV_INVALID) {
 		// Assume we had a connection before, which means we have to clean up
 		// by calling DisconnectNamedPipe() before the pipe can be reused.
@@ -86,9 +100,45 @@ bool ipc_server_reconnect(lcfr_ipc_server *ipc_server) {
 	return false;
 }
 
+/*
+ * Internal routine that tries to receive straight to the MessagePack unpacker
+ * buffer ("zero copy"). Completion may be asynchronous, so just return status code.
+ */
+static DWORD ipc_server_internal_receive(lcfr_ipc_server_t *ipc_server) {
+	register msgpack_unpacker *unp = ipc_server->unpacker;
+
+	// first, make sure we have a buffer and it has sufficient room
+	if (!unp->z) {
+		debug("re-alloc unpacker");
+		msgpack_unpacker_init(unp, DEFAULT_BUFFERSIZE);
+	}
+	if (msgpack_unpacker_buffer_capacity(unp) < ipc_server->msgSize) {
+		debug("add unpacker capacity");
+		msgpack_unpacker_reserve_buffer(unp, ipc_server->msgSize);
+	}
+
+	return ReadFile(ipc_server->hPipe, msgpack_unpacker_buffer(unp),
+					msgpack_unpacker_buffer_capacity(unp),
+					&ipc_server->cbRet, &ipc_server->oOverlap)
+		   ? ERROR_SUCCESS : GetLastError();
+}
+
+/*
+ * Internal routine that gets called upon successful receive.
+ * Will deserialize any complete messages via the MessagePack unpacker.
+ */
+static void ipc_server_internal_received(lcfr_ipc_server_t *ipc_server) {
+	if (ipc_server->msgSize > 0) {
+		// We have received some actual data, process (= deserialize) it
+		debug("%s() %u bytes", __func__, ipc_server->msgSize);
+		msgpack_unpacker_buffer_consumed(ipc_server->unpacker, ipc_server->msgSize);
+		ipc_server_internal_onRead(ipc_server);
+	}
+}
+
 #define IO_SLEEP	20 ///< in ms, the maximum time to wait for pending I/O
 
-bool ipc_server_transact(lcfr_ipc_server *ipc_server) {
+bool ipc_server_transact(lcfr_ipc_server_t *ipc_server) {
 	DWORD status; // Windows status / error code
 
 	// first let's see if our named pipe is awaiting any I/O operation
@@ -124,7 +174,7 @@ bool ipc_server_transact(lcfr_ipc_server *ipc_server) {
 				info("got %lu bytes", cbRet);
 				if (cbRet == ipc_server->msgSize) {
 					// got message data, process it (via callback)
-					if (ipc_server->onRead) ipc_server->onRead(ipc_server);
+					ipc_server_internal_received(ipc_server);
 				}
 				ipc_server->state = LCFR_IPCSRV_IDLE; // proceed to next stage
 				return true;
@@ -190,13 +240,8 @@ bool ipc_server_transact(lcfr_ipc_server *ipc_server) {
 
 		case LCFR_IPCSRV_READING:
 			//info("expecting to read %u message bytes\n", ipc_server->msgSize);
-			// prepare buffer and start reading actual message data from the pipe
-			free(ipc_server->msgBuffer);
-			ipc_server->msgBuffer = malloc(ipc_server->msgSize);
-			status = ReadFile(ipc_server->hPipe,
-					ipc_server->msgBuffer, ipc_server->msgSize,
-					&ipc_server->cbRet, &ipc_server->oOverlap)
-				? ERROR_SUCCESS : GetLastError();
+			// start reading actual message data from the pipe, into the unpacker
+			status = ipc_server_internal_receive(ipc_server);
 			if (status == ERROR_IO_PENDING) {
 				ipc_server->pendingIO = true;
 				return true;
@@ -209,7 +254,7 @@ bool ipc_server_transact(lcfr_ipc_server *ipc_server) {
 			if (status == ERROR_SUCCESS
 					&& ipc_server->cbRet == ipc_server->msgSize) {
 				// success: process message via callback, then proceed to next state
-				if (ipc_server->onRead) ipc_server->onRead(ipc_server);
+				ipc_server_internal_received(ipc_server);
 				ipc_server->state = LCFR_IPCSRV_IDLE;
 				return true;
 			}

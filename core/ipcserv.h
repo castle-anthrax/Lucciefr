@@ -50,8 +50,7 @@ struct lcfr_ipc_server {
 	bool pendingIO;				///< flag that indicates waiting for an asynchronous I/O operation
 	OVERLAPPED oOverlap;		///< Windows structure (and event) to signal on non-blocking I/O
 	DWORD cbRet;				///< (byte count for read/write operations, Windows API requirement)
-	DWORD msgSize;
-	void *msgBuffer;
+	DWORD msgSize;				///< size of (pending) message as detected by PeekNamedPipe()
 #endif
 	msgpack_unpacker *unpacker;	///< MessagePack unpacker, used for deserialization
 	ringbuffer_t write_queue;	///< write queue (ring buffer logic)

@@ -26,8 +26,8 @@ static void process_client_message(lcfr_ipc_server_t *ipc_server, msgpack_object
 		server_pipe_write(server_pipe, buffer + 1, server_pipe->msgSize - 1);
 	}
 	*/
-	info("%s(%p): %zu bytes @ %p", __func__, ipc_server,
-		ipc_server->msgSize, ipc_server->msgBuffer);
+	info("%s(%p): type %d, %zu bytes @ %p", __func__, ipc_server,
+		msg.type, msg.via.ext.size, msg.via.ext.ptr);
 }
 
 THREAD_FUNC ipc_server_thread(void *arg) {
